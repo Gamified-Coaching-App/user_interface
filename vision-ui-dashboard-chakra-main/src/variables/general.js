@@ -30,7 +30,6 @@ import {
 import { SiDropbox } from "react-icons/si";
 import {useState, useEffect} from 'react';
 import AWS from 'aws-sdk';
-AWS.config.update({ region: 'eu-west-2', aws_access_key_id: 'AKIAYS2NRY7BROLHQ3MR', aws_secret_access_key: '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' });
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
