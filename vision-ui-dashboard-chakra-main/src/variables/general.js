@@ -30,6 +30,7 @@ import {
 import { SiDropbox } from "react-icons/si";
 import {useState, useEffect} from 'react';
 import AWS from 'aws-sdk';
+import { BiCurrentLocation } from "react-icons/bi";
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
@@ -199,6 +200,54 @@ export const rtlTimelineData = [
 ];
 
 // My CODE =====================================================================================
+export let challengesData = [
+  {
+    challenge_id: "1",
+    completed_meters: 4000,
+    target_meters: 20000,
+    status: "current",
+    points: 2000,
+    start_date: "2024-02-26T00:00:00",
+    end_date: "2024-02-28T23:59:59"
+  },
+  {
+    challenge_id: "2",
+    completed_meters: 4000,
+    target_meters: 5000,
+    status: "current",
+    points: 1000,
+    start_date: "2024-02-26T00:00:00",
+    end_date: "2024-02-28T23:59:59"
+  },
+  {
+    challenge_id: "3",
+    completed_meters: 400,
+    target_meters: 10000,
+    status: "current",
+    points: 15000,
+    start_date: "2024-02-26T00:00:00",
+    end_date: "2024-02-28T23:59:59"
+  },
+  {
+    challenge_id: "4",
+    completed_meters: 5000,
+    target_meters: 12000,
+    status: "current",
+    points: 3000,
+    start_date: "2024-02-26T00:00:00",
+    end_date: "2024-02-28T23:59:59"
+  },
+  {
+    challenge_id: "5",
+    completed_meters: 7000,
+    target_meters: 10000,
+    status: "current",
+    points: 5000,
+    start_date: "2024-02-26T00:00:00",
+    end_date: "2024-02-28T23:59:59"
+  },
+];
+
 export let leaderboardData = [
   {
     username: "test_bot_1",

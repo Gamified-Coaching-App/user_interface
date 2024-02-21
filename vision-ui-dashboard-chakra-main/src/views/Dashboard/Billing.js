@@ -32,11 +32,12 @@ import IconBox from "components/Icons/IconBox";
 import BillingRow from "components/Tables/BillingRow";
 import InvoicesRow from "components/Tables/InvoicesRow";
 import TransactionRow from "components/Tables/TransactionRow";
+import ChallengesCard from "components/Tables/ChallengesCard";
 
 // Icons
 import { FaPencilAlt, FaRegCalendarAlt } from "react-icons/fa";
 import { IoEllipsisHorizontalSharp } from "react-icons/io5";
-import { RiMastercardFill } from "react-icons/ri";
+import { RiMastercardFill, RiRunFill, RiBikeFill } from "react-icons/ri";
 import {
   BillIcon,
   GraphIcon,
@@ -50,137 +51,33 @@ import {
   invoicesData,
   newestTransactions,
   olderTransactions,
+  challengesData,
 } from "variables/general";
+
 
 function Billing() {
 
   return (
     <Flex direction='column' pt={{ base: "120px", md: "75px" }} mx='auto'>
-      <Grid templateColumns={{ sm: "1fr", lg: "60% 38%" }}>
+      <Grid templateColumns="1fr">
         <Box>
           <Grid
-            templateColumns={{
-              sm: "1fr",
-              md: "1fr 1fr",
-            }}
+            templateColumns="1fr"
             gap='26px'>
               {/* Mastercard */}
-            <Card
-              backgroundImage={BackgroundCard1}
-              backgroundRepeat='no-repeat'
-              bgSize='cover'
-              bgPosition='10%'
-              p='16px'>
-              <CardBody h='100%' w='100%'>
-                <Flex
-                  direction='column'
-                  color='white'
-                  h='100%'
-                  p='0px 10px 20px 10px'
-                  w='100%'>
-                  <Flex justify='space-between' align='center'>
-                    <Text fontSize='md' fontWeight='bold'>
-                      Vision UI
-                    </Text>
-                    <Icon
-                      as={RiMastercardFill}
-                      w='48px'
-                      h='auto'
-                      color='gray.400'
-                    />
-                  </Flex>
-                  <Spacer />
-                  <Flex direction='column'>
-                    <Box>
-                      <Text
-                        fontSize={{ sm: "xl", lg: "lg", xl: "xl" }}
-                        letterSpacing='2px'
-                        fontWeight='bold'>
-                        7812 2139 0823 XXXX
-                      </Text>
-                    </Box>
-                    <Flex mt='14px'>
-                      <Flex direction='column' me='34px'>
-                        <Text fontSize='xs'>VALID THRU</Text>
-                        <Text fontSize='xs' fontWeight='bold'>
-                          05/24
-                        </Text>
-                      </Flex>
-                      <Flex direction='column'>
-                        <Text fontSize='xs'>CVV</Text>
-                        <Text fontSize='xs' fontWeight='bold'>
-                          09X
-                        </Text>
-                      </Flex>
-                    </Flex>
-                  </Flex>
-                </Flex>
-              </CardBody>
-            </Card>
-            {/* Credit Balance */}
-            <Card>
-              <Flex direction='column'>
-                <Flex
-                  justify='space-between'
-                  p='22px'
-                  mb='18px'
-                  bg='linear-gradient(127.09deg, rgba(34, 41, 78, 0.94) 19.41%, rgba(10, 14, 35, 0.49) 76.65%)'
-                  borderRadius='18px'>
-                  <Flex direction='column'>
-                    <Text color='#E9EDF7' fontSize='12px'>
-                      Credit Balance
-                    </Text>
-                    <Text color='#fff' fontWeight='bold' fontSize='34px'>
-                      $25,215
-                    </Text>
-                  </Flex>
-                  <Flex direction='column'>
-                    <Button
-                      bg='transparent'
-                      _hover='none'
-                      _active='none'
-                      alignSelf='flex-end'
-                      p='0px'>
-                      <Icon
-                        as={IoEllipsisHorizontalSharp}
-                        color='#fff'
-                        w='24px'
-                        h='24px'
-                        justifySelf='flex-start'
-                        alignSelf='flex-start'
-                      />
-                    </Button>
-                    <GraphIcon w='60px' h='18px' />
-                  </Flex>
-                </Flex>
-                <Text fontSize='10px' color='gray.400' mb='8px'>
-                  NEWEST
-                </Text>
-                <Flex justify='space-between' align='center'>
-                  <Flex align='center'>
-                    <IconBox
-                      bg='#22234B'
-                      borderRadius='30px'
-                      w='42px'
-                      h='42px'
-                      me='10px'>
-                      <BillIcon w='22px' h='22px' />
-                    </IconBox>
-                    <Flex direction='column'>
-                      <Text color='#fff' fontSize='sm' mb='2px'>
-                        Bill & Taxes
-                      </Text>
-                      <Text color='gray.400' fontSize='sm'>
-                        Today, 16:36
-                      </Text>
-                    </Flex>
-                  </Flex>
-                  <Text color='#fff' fontSize='sm' fontWeight='bold'>
-                    -$154.50
-                  </Text>
-                </Flex>
-              </Flex>
-            </Card>
+              {challengesData.map((row) => {
+                return (
+                  <ChallengesCard
+                    challenge_id={row.challenge_id}
+                    completed_meters={row.completed_meters}
+                    target_meters={row.target_meters}
+                    status={row.status}
+                    points={row.points}
+                    start_date={row.start_date}
+                    end_date={row.end_date}
+                  />
+                );
+              })}
           </Grid>
           {/* Payment Method */}
           <Card p='16px' mt='24px'>
