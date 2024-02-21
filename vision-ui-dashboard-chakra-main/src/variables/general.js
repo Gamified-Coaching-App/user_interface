@@ -28,6 +28,11 @@ import {
   FaShoppingCart,
 } from "react-icons/fa";
 import { SiDropbox } from "react-icons/si";
+import {useState, useEffect} from 'react';
+import AWS from 'aws-sdk';
+AWS.config.update({ region: 'eu-west-2', aws_access_key_id: 'AKIAYS2NRY7BROLHQ3MR', aws_secret_access_key: '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' });
+
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 export const dashboardTableData = [
   {
@@ -193,6 +198,49 @@ export const rtlTimelineData = [
     date: "18 DEC 4:41 PM",
   },
 ];
+
+// My CODE =====================================================================================
+export let leaderboardData = [
+  {
+    username: "test_bot_1",
+    position_new: 2,
+    position_old: 3,
+    aggregate_skills_season: 10
+  },
+  {
+    username: "test_bot_2",
+    position_new: 3,
+    position_old: 2,
+    aggregate_skills_season: 9
+  },
+  {
+    username: "Gabriel",
+    position_new: 1,
+    position_old: 1,
+    aggregate_skills_season: 16
+  },
+  {
+    username: "test_bot_97",
+    position_new: 4,
+    position_old: 4,
+    aggregate_skills_season: 1
+  },
+];
+
+export const fetchLeaderboard = async () => {
+  try {
+    const params = {
+      TableName: 'leaderboard_mock'
+    };
+    const {tableData} = await dynamoDb.scan(params).promise();
+    console.log("Hey brother");
+    //leaderboardData = tableData;
+  } catch (error) {
+    console.log("Hey brother2");
+    console.error("Error fetching the data:", error);
+  }
+}
+// My CODE =====================================================================================
 
 export const tablesTableData = [
   {

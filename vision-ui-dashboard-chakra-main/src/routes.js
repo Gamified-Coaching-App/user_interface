@@ -38,7 +38,7 @@ import {
 var dashRoutes = [
   {
     path: "/dashboard",
-    name: "Leaderboard",
+    name: "NewBuffer",
     rtlName: "لوحة القيادة",
     icon: <HomeIcon color='inherit' />,
     component: Dashboard,
