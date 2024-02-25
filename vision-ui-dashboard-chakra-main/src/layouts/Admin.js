@@ -1,21 +1,4 @@
-/*!
-
-=========================================================
-* Vision UI Free Chakra - v1.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/vision-ui-free-chakra
-* Copyright 2021 Creative Tim (https://www.creative-tim.com/)
-* Licensed under MIT (https://github.com/creativetimofficial/vision-ui-free-chakra/blob/master LICENSE.md)
-
-* Design and Coded by Simmmple & Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-
+// Admin.js
 // Chakra imports
 import { ChakraProvider, Portal, useDisclosure } from "@chakra-ui/react";
 import Configurator from "components/Configurator/Configurator";
@@ -23,7 +6,7 @@ import Footer from "components/Footer/Footer.js";
 // Layout components
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
-import React, { useState } from "react";
+import React, { useState, createContext } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import routes from "routes.js";
 // Custom Chakra theme
@@ -33,6 +16,9 @@ import FixedPlugin from "../components/FixedPlugin/FixedPlugin";
 import MainPanel from "../components/Layout/MainPanel";
 import PanelContainer from "../components/Layout/PanelContainer";
 import PanelContent from "../components/Layout/PanelContent";
+// Contexts
+import TrainingDataContext, { TrainingDataProvider } from "../contexts/TrainingDataContext";
+
 export default function Dashboard(props) {
   const { ...rest } = props;
   // states and functions
@@ -113,60 +99,60 @@ export default function Dashboard(props) {
   document.documentElement.dir = "ltr";
   // Chakra Color Mode
   return (
-    <ChakraProvider theme={theme} resetCss={false}>
-      <Sidebar
-        routes={routes}
-        logoText={"VISION UI FREE"}
-        display='none'
-        sidebarVariant={sidebarVariant}
-        {...rest}
-      />
-      <MainPanel
-        ref={mainPanel}
-        w={{
-          base: "100%",
-          xl: "calc(100% - 275px)",
-        }}>
-        <Portal>
-          <AdminNavbar
-            onOpen={onOpen}
-            logoText={"VISION UI FREE"}
-            brandText={getActiveRoute(routes)}
-            secondary={getActiveNavbar(routes)}
-            fixed={fixed}
-            {...rest}
-          />
-        </Portal>
-        {getRoute() ? (
-          <PanelContent>
-            <PanelContainer>
-              <Switch>
-                {getRoutes(routes)}
-                <Redirect from='/admin' to='/admin/dashboard' />
-              </Switch>
-            </PanelContainer>
-          </PanelContent>
-        ) : null}
-        <Footer />
-        <Portal>
-          <FixedPlugin
-            secondary={getActiveNavbar(routes)}
-            fixed={fixed}
-            onOpen={onOpen}
-          />
-        </Portal>
-        <Configurator
-          secondary={getActiveNavbar(routes)}
-          isOpen={isOpen}
-          onClose={onClose}
-          isChecked={fixed}
-          onSwitch={(value) => {
-            setFixed(value);
-          }}
-          onOpaque={() => setSidebarVariant("opaque")}
-          onTransparent={() => setSidebarVariant("transparent")}
+      <ChakraProvider theme={theme} resetCss={false}>
+        <Sidebar
+          routes={routes}
+          logoText={"VISION UI FREE"}
+          display='none'
+          sidebarVariant={sidebarVariant}
+          {...rest}
         />
-      </MainPanel>
-    </ChakraProvider>
+        <MainPanel
+          ref={mainPanel}
+          w={{
+            base: "100%",
+            xl: "calc(100% - 275px)",
+          }}>
+          <Portal>
+            <AdminNavbar
+              onOpen={onOpen}
+              logoText={"VISION UI FREE"}
+              brandText={getActiveRoute(routes)}
+              secondary={getActiveNavbar(routes)}
+              fixed={fixed}
+              {...rest}
+            />
+          </Portal>
+          {getRoute() ? (
+            <PanelContent>
+              <PanelContainer>
+                <Switch>
+                  {getRoutes(routes)}
+                  <Redirect from='/admin' to='/admin/dashboard' />
+                </Switch>
+              </PanelContainer>
+            </PanelContent>
+          ) : null}
+          <Footer />
+          <Portal>
+            <FixedPlugin
+              secondary={getActiveNavbar(routes)}
+              fixed={fixed}
+              onOpen={onOpen}
+            />
+          </Portal>
+          <Configurator
+            secondary={getActiveNavbar(routes)}
+            isOpen={isOpen}
+            onClose={onClose}
+            isChecked={fixed}
+            onSwitch={(value) => {
+              setFixed(value);
+            }}
+            onOpaque={() => setSidebarVariant("opaque")}
+            onTransparent={() => setSidebarVariant("transparent")}
+          />
+        </MainPanel>
+      </ChakraProvider>
   );
 }

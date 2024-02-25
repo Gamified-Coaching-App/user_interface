@@ -25,6 +25,7 @@ import RTLPage from "views/RTL/RTLPage.js";
 import Profile from "views/Dashboard/Profile.js";
 import SignIn from "views/Pages/SignIn.js";
 import SignUp from "views/Pages/SignUp.js";
+import WeeklyOverview from "views/Dashboard/WeeklyOverview.js"
 
 import {
   HomeIcon,
@@ -39,11 +40,19 @@ import {
 var dashRoutes = [
   {
     path: "/dashboard",
-    name: "NewBuffer",
+    name: "Dashboard",
     rtlName: "لوحة القيادة",
     icon: <HomeIcon color='inherit' />,
     component: Dashboard,
     layout: "/admin",
+  },
+  {
+    path: "/weekly",
+    name: "Weekly Overview",
+    rtlName: "لوحة القيادة",
+    icon: <HomeIcon color='inherit' />,
+    component: WeeklyOverview,
+    layout: "/admin",  
   },
   {
     path: "/tables",
@@ -54,13 +63,14 @@ var dashRoutes = [
     layout: "/admin",
   },
   {
-    path: "/billing",
+    path: "/challenges",
     name: "Challenges",
     rtlName: "لوحة القيادة",
     icon: <CreditIcon color='inherit' />,
     component: Billing,
     layout: "/admin",
   },
+  /*
   {
     path: "/rtl-support-page",
     name: "RTL",
@@ -69,6 +79,7 @@ var dashRoutes = [
     component: RTLPage,
     layout: "/rtl",
   },
+  */
   {
     name: "ACCOUNT PAGES",
     category: "account",

@@ -171,7 +171,7 @@ function Billing() {
               align='center'
               mb='1rem'
               w='100%'
-              mb='28px'>
+              /*mb='28px'*/>
               <Text fontSize='lg' color='#fff' fontWeight='bold'>
                 Invoices
               </Text>
@@ -248,7 +248,7 @@ function Billing() {
                     color='gray.400'
                     w='15px'
                     h='15px'
-                    color='#fff'
+                    //color='#fff'
                     me='6px'
                   />
                   <Text color='gray.400' fontSize='sm'>
