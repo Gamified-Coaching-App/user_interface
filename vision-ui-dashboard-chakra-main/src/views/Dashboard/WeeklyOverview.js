@@ -1,12 +1,27 @@
-import React, { useContext } from 'react';
-import { Flex, Text, Button } from '@chakra-ui/react';
+// WeeklyOverview.js
+import React, { useContext, useState, useEffect } from 'react';
+import { Flex, Text, Button, Box } from '@chakra-ui/react';
 import {
-    ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList
+    ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart
 } from 'recharts';
-import TrainingDataContext from '../../contexts/TrainingDataContext'; 
+import TrainingDataContext from '../../contexts/TrainingDataContext';
 
 const WeeklyOverview = () => {
   const { trainingData, refreshData, loading, error } = useContext(TrainingDataContext);
+  const [summaryData, setSummaryData] = useState({ RUNNING: 0, CYCLING: 0, OTHER: 0 });
+
+  useEffect(() => {
+    if (trainingData) {
+      const newSummary = trainingData.reduce((acc, activity) => {
+        const activityType = activity.activity_type;
+        const distance = activity.distance_meters_total / 1000;
+        acc[activityType] = (acc[activityType] || 0) + distance;
+        return acc;
+      }, {});
+
+      setSummaryData(newSummary);
+    }
+  }, [trainingData]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error fetching data: {error}</div>;
@@ -14,6 +29,7 @@ const WeeklyOverview = () => {
 
   // Process and prepare data for rendering
   const dataByDay = {}; // Create an object to hold data by day
+  
   // Populate the object with days of the week
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   daysOfWeek.forEach(day => {
@@ -41,12 +57,32 @@ const WeeklyOverview = () => {
     Elevation: dataByDay[day].Elevation,
   }));
 
+  // Summary chart data
+  const summaryChartData = Object.entries(summaryData).map(([activityType, distance]) => ({
+    name: activityType,
+    Distance: distance
+  }));
+
   return (
-  <Flex direction='column' pt={{ base: "120px", md: "75px" }}>
-    <Text fontSize='lg' color='#fff' fontWeight='bold' mb="4">
-    {totalDistance > 0 ? `Good job! You've run ${totalDistance} km this week.` : `You have not yet completed any workouts this week.`}
-    </Text>
-    <ResponsiveContainer width="100%" height={500}>
+    <Flex direction='column' pt={{ base: "120px", md: "75px" }}>
+      <Box mb="6">
+        <Text fontSize='lg' color='#fff' fontWeight='bold' mb="4">
+          Your Weekly Summary
+        </Text>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={summaryChartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" tick={{ fill: '#fff' }} />
+            <YAxis tickFormatter={(tick) => `${tick} km`} />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="Distance" fill="#82ca9d" />
+          </BarChart>
+        </ResponsiveContainer>
+        <Text fontSize='lg' color='#fff' fontWeight='bold' mb="4">
+          You have run {totalDistance} km so far this week
+        </Text>
+        <ResponsiveContainer width="100%" height={250}>
         <ComposedChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
@@ -92,8 +128,11 @@ const WeeklyOverview = () => {
                 strokeWidth={3} 
             />
         </ComposedChart>
-    </ResponsiveContainer>
-    <Button onClick={refreshData} colorScheme="blue" mt="4" alignSelf="center" width="200px">Refresh Data</Button>
+        </ResponsiveContainer>
+      </Box>
+      <Button onClick={refreshData} colorScheme="blue" mt="4" alignSelf="center" width="200px">
+        Refresh Data
+      </Button>
     </Flex>
   );
 };
