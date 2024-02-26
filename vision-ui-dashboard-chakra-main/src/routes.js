@@ -1,24 +1,6 @@
-/*!
-
-=========================================================
-* Vision UI Free Chakra - v1.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/vision-ui-free-chakra
-* Copyright 2021 Creative Tim (https://www.creative-tim.com/)
-* Licensed under MIT (https://github.com/creativetimofficial/vision-ui-free-chakra/blob/master LICENSE.md)
-
-* Design and Coded by Simmmple & Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-
 // import
 import Dashboard from "views/Dashboard/Dashboard.js";
-import Tables from "views/Dashboard/Tables.js";
+import Leaderboard from "views/Dashboard/Leaderboard.js";
 import Billing from "views/Dashboard/Billing.js";
 import ChallengesPage from "views/Dashboard/Challenges.js";
 import RTLPage from "views/RTL/RTLPage.js";
@@ -55,11 +37,11 @@ var dashRoutes = [
     layout: "/admin",  
   },
   {
-    path: "/tables",
+    path: "/leaderboard",
     name: "Leaderboard",
     rtlName: "لوحة القيادة",
     icon: <StatsIcon color='inherit' />,
-    component: Tables,
+    component: Leaderboard,
     layout: "/admin",
   },
   {
