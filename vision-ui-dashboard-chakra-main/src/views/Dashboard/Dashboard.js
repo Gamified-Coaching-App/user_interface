@@ -62,7 +62,9 @@ import {
 	barChartDataDashboard,
 	barChartOptionsDashboard,
 	lineChartDataDashboard,
-	lineChartOptionsDashboard
+	lineChartOptionsDashboard,
+	trainingLogData,
+	trainingLogOptions
 } from 'variables/charts';
 import { dashboardTableData, timelineData } from 'variables/general';
 
@@ -399,8 +401,8 @@ export default function Dashboard() {
 					</CardHeader>
 					<Box w='100%' minH={{ sm: '300px' }}>
 						<LineChart
-							lineChartData={lineChartDataDashboard}
-							lineChartOptions={lineChartOptionsDashboard}
+							lineChartData={trainingLogData}
+							lineChartOptions={trainingLogOptions}
 						/>
 					</Box>
 				</Card>
