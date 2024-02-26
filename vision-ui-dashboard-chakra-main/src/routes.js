@@ -70,7 +70,7 @@ var dashRoutes = [
     component: Billing,
     layout: "/admin",
   },
-  /*
+  /* Tiril: removed right-to-left functionality
   {
     path: "/rtl-support-page",
     name: "RTL",
