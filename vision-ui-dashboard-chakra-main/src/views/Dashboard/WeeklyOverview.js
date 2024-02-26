@@ -1,67 +1,45 @@
-// WeeklyOverview.js
 import React, { useContext } from 'react';
-import { Flex, Table, Tbody, Text, Th, Thead, Tr, Td, Button } from '@chakra-ui/react';
+import { Flex, Box, Text, Button } from '@chakra-ui/react';
+import { BarChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import TrainingDataContext from '../../contexts/TrainingDataContext'; 
-
-import Card from 'components/Card/Card.js';
-import CardHeader from 'components/Card/CardHeader.js';
-import CardBody from 'components/Card/CardBody.js';
 
 const WeeklyOverview = () => {
     const { trainingData, refreshData, loading, error } = useContext(TrainingDataContext);
     
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    if (loading) return <Box>Loading...</Box>;
+    if (error) return <Box>Error fetching data: {error}</Box>;
+    if (!trainingData || trainingData.length === 0) return <Box>No data available.</Box>;
 
-    if (error) {
-        return <div>Error fetching data: {error}</div>;
-    }
-
-    // Check if trainingData is null or empty
-    if (!trainingData || trainingData.length === 0) {
-        return <div>No data available.</div>;
-    }
-
-    // Process data to summarize distances by day of the week
-    const weeklyData = trainingData.reduce((acc, current) => {
-        const date = new Date(current.timestamp_local * 1000); // Convert timestamp to milliseconds
-        const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
-        if (!acc[dayOfWeek]) {
-            acc[dayOfWeek] = 0;
-        }
-        acc[dayOfWeek] += current.distance_meters_total / 1000; // Convert meters to kilometers
-        return acc;
-    }, {});
+    // Create a data structure for the chart
+    // Assuming the training data is already sorted by date, if not you should sort it
+    const processedData = trainingData.map((data) => ({
+        day: new Date(data.timestamp_local * 1000).toLocaleDateString('en-US', { weekday: 'short' }),
+        Distance: data.distance_meters_total / 1000, // Convert meters to kilometers
+        MaxHeartRate: data.max_heart_rate_in_bpm,
+        Elevation: data.elevation_gain_meters_total
+    }));
 
     return (
         <Flex direction='column' pt={{ base: "120px", md: "75px" }}>
-            <Card overflowX={{ sm: "scroll", xl: "hidden" }}>
-                <CardHeader p='6px 0px 22px 0px'>
-                    <Text fontSize='lg' color='#fff' fontWeight='bold'>
-                        Weekly Running Distance Overview
-                    </Text>
-                    <Button onClick={refreshData} colorScheme="blue">Refresh Data</Button>
-                </CardHeader>
-                <CardBody>
-                    <Table variant='simple' color='#fff'>
-                        <Thead>
-                            <Tr color='gray.400'>
-                                <Th>Day of the Week</Th>
-                                <Th>Kilometers Ran</Th>
-                            </Tr>
-                        </Thead>
-                        <Tbody>
-                            {Object.entries(weeklyData).map(([day, distance], index) => (
-                                <Tr key={index}>
-                                    <Td>{day}</Td>
-                                    <Td>{distance.toFixed(2)} km</Td>
-                                </Tr>
-                            ))}
-                        </Tbody>
-                    </Table>
-                </CardBody>
-            </Card>
+            <Box mb='24px'>
+                <Text fontSize='lg' color='white' fontWeight='bold' mb='16px'>
+                    Weekly Running Distance Overview
+                </Text>
+                <Button onClick={refreshData} colorScheme="blue">Refresh Data</Button>
+            </Box>
+            <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={processedData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="day" />
+                    <YAxis yAxisId="left" orientation="left" stroke="#8884d8"/>
+                    <YAxis yAxisId="right" orientation="right" stroke="#82ca9d"/>
+                    <Tooltip />
+                    <Legend />
+                    <Bar yAxisId="left" dataKey="Distance" fill="#8884d8" />
+                    <Line yAxisId="right" type="monotone" dataKey="MaxHeartRate" stroke="#82ca9d" />
+                    <Line yAxisId="right" type="monotone" dataKey="Elevation" stroke="#82ca9d" />
+                </BarChart>
+            </ResponsiveContainer>
         </Flex>
     );
 };
