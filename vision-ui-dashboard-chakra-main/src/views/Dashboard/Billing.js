@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React, {useEffect, useState} from "react";
 
 // Chakra imports
 import { Box, Button, Flex, Grid, Icon, Spacer, Text } from "@chakra-ui/react";
@@ -51,12 +51,20 @@ import {
   invoicesData,
   newestTransactions,
   olderTransactions,
-  challengesData,
+  //challengesData,
+  fetchChallenges,
 } from "variables/general";
 
 
 function Billing() {
+  const [challengesData, setChallengesData] = useState(null);
 
+  const fetchData = async () => {
+    const data = await fetchChallenges();
+    setChallengesData(data);
+  };
+
+  fetchData();
   return (
     <Flex direction='column' pt={{ base: "120px", md: "75px" }} mx='auto'>
       <Grid templateColumns="1fr">
