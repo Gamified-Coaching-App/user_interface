@@ -57,12 +57,14 @@ import {
 
 
 function Billing() {
+  const [loading, setLoading] = useState(true);
   const [challengesData, setChallengesData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchChallenges();
       setChallengesData(data);
+      setLoading(false);
     };
 
     fetchData();
@@ -71,6 +73,9 @@ function Billing() {
     <Flex direction='column' pt={{ base: "120px", md: "75px" }} mx='auto'>
       <Grid templateColumns="1fr">
         <Box>
+        {loading ? ( // Conditional rendering for loading message
+             <h1 style={{ color: 'white', textAlign: 'center' }}>Loading...</h1>
+          ) : (
           <Grid
             templateColumns="1fr"
             gap='26px'>
@@ -91,216 +96,8 @@ function Billing() {
                 );
               })}
           </Grid>
-          {/* Payment Method */}
-          <Card p='16px' mt='24px'>
-            <CardHeader>
-              <Flex
-                justify='space-between'
-                align='center'
-                minHeight='60px'
-                w='100%'>
-                <Text fontSize='lg' color='#fff' fontWeight='bold'>
-                  Payment Method
-                </Text>
-                <Button maxW='135px' fontSize='10px' variant='brand'>
-                  ADD A NEW CARD
-                </Button>
-              </Flex>
-            </CardHeader>
-            <CardBody>
-              <Flex
-                direction={{ sm: "column", md: "row" }}
-                align='center'
-                w='100%'
-                justify='center'
-                py='1rem'>
-                <GradientBorder
-                  mb={{ sm: "24px", md: "0px" }}
-                  me={{ sm: "0px", md: "24px" }}
-                  w='100%'
-                  borderRadius='20px'>
-                  <Flex
-                    p='22px'
-                    bg='rgb(31, 35, 89)'
-                    border='transparent'
-                    borderRadius='20px'
-                    align='center'
-                    w='100%'>
-                    <IconBox me='10px' w='25px' h='22px'>
-                      <MastercardIcon w='100%' h='100%' />
-                    </IconBox>
-                    <Text color='#fff' fontSize='sm'>
-                      7812 2139 0823 XXXX
-                    </Text>
-                    <Spacer />
-                    <Button
-                      p='0px'
-                      bg='transparent'
-                      w='16px'
-                      h='16px'
-                      variant='no-hover'>
-                      <Icon as={FaPencilAlt} color='#fff' w='12px' h='12px' />
-                    </Button>
-                  </Flex>
-                </GradientBorder>
-                <GradientBorder w='100%' borderRadius='20px'>
-                  <Flex
-                    p='22px'
-                    bg='rgb(31, 35, 89)'
-                    w='100%'
-                    borderRadius='20px'
-                    border='transparent'
-                    align='center'>
-                    <IconBox me='10px' w='25px' h='25px'>
-                      <VisaIcon w='100%' h='100%' color='#fff' />
-                    </IconBox>
-                    <Text color='#fff' fontSize='sm'>
-                      7812 2139 0823 XXXX
-                    </Text>
-                    <Spacer />
-                    <Button
-                      p='0px'
-                      bg='transparent'
-                      w='16px'
-                      h='16px'
-                      variant='no-hover'>
-                      <Icon as={FaPencilAlt} color='#fff' w='12px' h='12px' />
-                    </Button>
-                  </Flex>
-                </GradientBorder>
-              </Flex>
-            </CardBody>
-          </Card>
+        )}
         </Box>
-        {/* Invoices List */}
-        <Card
-          p='22px'
-          my={{ sm: "24px", lg: "0px" }}
-          ms={{ sm: "0px", lg: "24px" }}>
-          <CardHeader>
-            <Flex
-              justify='space-between'
-              align='center'
-              mb='1rem'
-              w='100%'
-              mb='28px'>
-              <Text fontSize='lg' color='#fff' fontWeight='bold'>
-                Invoices
-              </Text>
-              <Button
-                variant='brand'
-                fontSize='10px'
-                fontWeight='bold'
-                p='6px 32px'>
-                VIEW ALL
-              </Button>
-            </Flex>
-          </CardHeader>
-          <CardBody>
-            <Flex direction='column' w='100%'>
-              {invoicesData.map((row) => {
-                return (
-                  <InvoicesRow
-                    date={row.date}
-                    code={row.code}
-                    price={row.price}
-                    logo={row.logo}
-                    format={row.format}
-                  />
-                );
-              })}
-            </Flex>
-          </CardBody>
-        </Card>
-      </Grid>
-      <Grid templateColumns={{ sm: "1fr", lg: "60% 38%" }}>
-        {/* Billing Information */}
-        <Card my={{ lg: "24px" }} me={{ lg: "24px" }}>
-          <Flex direction='column'>
-            <CardHeader py='12px'>
-              <Text color='#fff' fontSize='lg' fontWeight='bold'>
-                Billing Information
-              </Text>
-            </CardHeader>
-            <CardBody>
-              <Flex direction='column' w='100%'>
-                {billingData.map((row) => {
-                  return (
-                    <BillingRow
-                      name={row.name}
-                      company={row.company}
-                      email={row.email}
-                      number={row.number}
-                    />
-                  );
-                })}
-              </Flex>
-            </CardBody>
-          </Flex>
-        </Card>
-        {/* Transactions List */}
-        <Card my='24px' ms={{ lg: "24px" }}>
-          <CardHeader mb='12px'>
-            <Flex direction='column' w='100%'>
-              <Flex
-                direction={{ sm: "column", lg: "row" }}
-                justify={{ sm: "center", lg: "space-between" }}
-                align={{ sm: "center" }}
-                w='100%'
-                my={{ md: "12px" }}>
-                <Text
-                  color='#fff'
-                  fontSize={{ sm: "lg", md: "xl", lg: "lg" }}
-                  fontWeight='bold'>
-                  Your Transactions
-                </Text>
-                <Flex align='center'>
-                  <Icon
-                    as={FaRegCalendarAlt}
-                    color='gray.400'
-                    w='15px'
-                    h='15px'
-                    color='#fff'
-                    me='6px'
-                  />
-                  <Text color='gray.400' fontSize='sm'>
-                    23 - 30 March 2021
-                  </Text>
-                </Flex>
-              </Flex>
-            </Flex>
-          </CardHeader>
-          <CardBody>
-            <Flex direction='column' w='100%'>
-              <Text color='gray.400' fontSize='xs' mb='18px'>
-                NEWEST
-              </Text>
-              {newestTransactions.map((row) => {
-                return (
-                  <TransactionRow
-                    name={row.name}
-                    logo={row.logo}
-                    date={row.date}
-                    price={row.price}
-                  />
-                );
-              })}
-              <Text color='gray.400' fontSize='xs' my='18px'>
-                OLDER
-              </Text>
-              {olderTransactions.map((row) => {
-                return (
-                  <TransactionRow
-                    name={row.name}
-                    logo={row.logo}
-                    date={row.date}
-                    price={row.price}
-                  />
-                );
-              })}
-            </Flex>
-          </CardBody>
-        </Card>
       </Grid>
     </Flex>
   );
