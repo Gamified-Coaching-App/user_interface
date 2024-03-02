@@ -57,14 +57,16 @@ import {
 
 
 function Billing() {
-  const [challengesData, setChallengesData] = useState(null);
+  const [challengesData, setChallengesData] = useState([]);
 
-  const fetchData = async () => {
-    const data = await fetchChallenges();
-    setChallengesData(data);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchChallenges();
+      setChallengesData(data);
+    };
 
-  fetchData();
+    fetchData();
+  }, []); // Empty dependency array ensures this effect runs only once on mount
   return (
     <Flex direction='column' pt={{ base: "120px", md: "75px" }} mx='auto'>
       <Grid templateColumns="1fr">
@@ -73,10 +75,12 @@ function Billing() {
             templateColumns="1fr"
             gap='26px'>
               {/* Mastercard */}
-              {challengesData.map((row) => {
+              {challengesData
+              .sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
+              .map((row) => {
                 return (
                   <ChallengesCard
-                    challenge_id={row.challenge_id}
+                    description={row.description}
                     completed_meters={row.completed_meters}
                     target_meters={row.target_meters}
                     status={row.status}

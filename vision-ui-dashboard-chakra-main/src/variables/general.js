@@ -200,7 +200,7 @@ export const rtlTimelineData = [
 ];
 
 // My CODE =====================================================================================
-export let challengesData = [
+export let challengesDataHard = [
   {
     challenge_id: "1",
     completed_meters: 4000,
@@ -272,7 +272,7 @@ export const fetchChallenges = async () => {
   } catch (error) {
     console.error('Error fetching challenges:', error.message);
     // Handle errors here
-    return challengesData; // Return null or handle error as per your requirement
+    return challengesDataHard; // Return null or handle error as per your requirement
   }
 }
 
