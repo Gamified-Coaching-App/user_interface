@@ -40,56 +40,34 @@ const WeeklyOverview = () => {
   };
 
 
-function getDayOfWeek(unixTime) {
-    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    const date = new Date(unixTime * 1000); 
-    const dayIndex = (date.getDay() + 6) % 7;
-
-    switch (dayIndex) {
-        case 0:
-            return days[0];
-        case 1:
-            return days[1];
-        case 2:
-            return days[2];
-        case 3:
-            return days[3];
-        case 4:
-            return days[4];
-        case 5:
-            return days[5];
-        case 6:
-            return days[6];
-        default:
-            return "Invalid day";
-    }
-}
+  function getDayOfWeek(timestampLocal) {
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const [year, month, day] = timestampLocal.split('-');
+    const date = new Date(year, month - 1, day); // Month is 0-indexed in JavaScript Date objects
+    const dayIndex = date.getDay();
+    return days[dayIndex];
+  }
 
   // Process trainingData to populate dayData
   const processTrainingData = (data) => {
     const dataByDay = initializeDayData();
     let totalDistance = 0;
-  
-    data.forEach(activity => {
-      console.log("activity ", activity.session_id)
-      const dayOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-  
-      if (dataByDay[dayOfWeek]) {
-        if (activity.activity_type === "RUNNING") {
-          const activityType = activity.activity_type;
-          const distance = activity.distance_meters_total / 1000;
-          const dayOfWeek = getDayOfWeek(activity.session_id);
 
-          dataByDay[dayOfWeek].Distance += activity.distance_meters_total / 1000;
+    data.forEach(activity => {
+      if (activity.activity_type === "RUNNING") {
+        const dayOfWeek = getDayOfWeek(activity.timestamp_local); // Assuming timestamp_local is available
+        if (dataByDay.hasOwnProperty(dayOfWeek)) {
+          const distance = activity.distance_meters_total / 1000;
+          dataByDay[dayOfWeek].Distance += distance;
           dataByDay[dayOfWeek].MaxHeartRate = Math.max(dataByDay[dayOfWeek].MaxHeartRate, activity.max_heart_rate_in_bpm);
           dataByDay[dayOfWeek].Elevation += activity.elevation_gain_meters_total;
-          totalDistance += activity.distance_meters_total / 1000;
+          totalDistance += distance;
+        } else {
+          console.error(`Day of week not found: ${dayOfWeek}`);
         }
-      } else {
-        console.error(`Day of week not found: ${dayOfWeek}`);
       }
     });
-  
+
     return { dataByDay, totalDistance };
   };
 
@@ -110,7 +88,7 @@ function getDayOfWeek(unixTime) {
 
   // Summary chart data
   const summaryChartData = Object.entries(summaryData).map(([activityType, distance]) => ({
-    name: activityType,
+    name: activityType === 'OTHER' ? 'CYCLING' : activityType,
     Distance: distance
   }));
 
@@ -138,7 +116,7 @@ function getDayOfWeek(unixTime) {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
                 dataKey="name" 
-                tick={{ fill: '#fff' }} // replace 'yourColorHere' with the color you wan
+                tick={{ fill: '#fff' }}
             />
             <YAxis 
                 yAxisId="left" 
