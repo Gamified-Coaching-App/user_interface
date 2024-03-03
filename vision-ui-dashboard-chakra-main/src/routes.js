@@ -38,6 +38,7 @@ import {
 } from "components/Icons/Icons";
 
 var dashRoutes = [
+  /* Dashboard removed temporarily
   {
     path: "/dashboard",
     name: "Dashboard",
@@ -45,7 +46,7 @@ var dashRoutes = [
     icon: <HomeIcon color='inherit' />,
     component: Dashboard,
     layout: "/admin",
-  },
+  }, */
   {
     path: "/weekly",
     name: "Weekly Overview",
