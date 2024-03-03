@@ -38,15 +38,14 @@ import {
 } from "components/Icons/Icons";
 
 var dashRoutes = [
-  /* Dashboard removed temporarily
   {
     path: "/dashboard",
-    name: "Dashboard",
+    name: "Weekly Overview",
     rtlName: "لوحة القيادة",
     icon: <HomeIcon color='inherit' />,
-    component: Dashboard,
+    component: WeeklyOverview,
     layout: "/admin",
-  }, */
+  }, /* 
   {
     path: "/weekly",
     name: "Weekly Overview",
@@ -54,7 +53,7 @@ var dashRoutes = [
     icon: <HomeIcon color='inherit' />,
     component: WeeklyOverview,
     layout: "/admin",  
-  },
+  }, */
   {
     path: "/tables",
     name: "Leaderboard",
