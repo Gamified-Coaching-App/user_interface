@@ -55,7 +55,7 @@ var dashRoutes = [
     layout: "/admin",  
   }, */
   {
-    path: "/tables",
+    path: "/leaderboard",
     name: "Leaderboard",
     rtlName: "لوحة القيادة",
     icon: <StatsIcon color='inherit' />,
@@ -86,6 +86,7 @@ var dashRoutes = [
     rtlName: "صفحات",
     state: "pageCollapse",
     views: [
+      /* Tiril removed
       {
         path: "/profile",
         name: "Profile",
@@ -94,7 +95,7 @@ var dashRoutes = [
         secondaryNavbar: true,
         component: Profile,
         layout: "/admin",
-      },
+      }, */
       {
         path: "/signin",
         name: "Sign In",
