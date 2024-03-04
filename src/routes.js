@@ -79,7 +79,7 @@ var dashRoutes = [
     component: RTLPage,
     layout: "/rtl",
   },
-  */
+  
   {
     name: "ACCOUNT PAGES",
     category: "account",
@@ -96,7 +96,7 @@ var dashRoutes = [
         component: Profile,
         layout: "/admin",
       }, */
-      {
+      /*{
         path: "/signin",
         name: "Sign In",
         rtlName: "لوحة القيادة",
@@ -114,6 +114,6 @@ var dashRoutes = [
         layout: "/auth",
       },
     ],
-  },
+  },*/
 ];
 export default dashRoutes;
