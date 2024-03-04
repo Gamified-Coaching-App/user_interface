@@ -1,11 +1,11 @@
 // React imports
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
 
 // Import Amplify and configuration
-import { Amplify } from 'aws-amplify';
-import config from './config/aws-exports'; 
+// import { Amplify } from 'aws-amplify';
+// import config from './config/aws-exports'; 
 
 // Layouts and contexts
 import AuthLayout from "layouts/Auth.js";
@@ -14,7 +14,7 @@ import RTLLayout from "layouts/RTL.js";
 import { TrainingDataProvider } from './contexts/TrainingDataContext';
 
 // Configure Amplify with your AWS configuration
-Amplify.configure(config);
+// Amplify.configure(config);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
