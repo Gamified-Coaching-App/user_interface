@@ -3,6 +3,7 @@ import { fetchAuthSession } from '@aws-amplify/auth';
 export const fetchSession = async () => {
     // First, try to retrieve the JWT token from session storage
     let jwtToken = sessionStorage.getItem('jwtToken');
+    console.log("JWT Token: ", jwtToken);
 
     // If the token isn't in session storage, fetch and store it
     if (!jwtToken) {
