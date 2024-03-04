@@ -1,9 +1,11 @@
 import React from "react";
+import { useEffect, useState } from 'react';
 import ReactDOM from "react-dom";
 import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from 'aws-amplify';
 import config from './aws-exports';
+import { fetchSession } from './components/Authentication/sessionManager';
 import {
   withAuthenticator,
 } from "@aws-amplify/ui-react";
@@ -16,6 +18,13 @@ import RTLLayout from "layouts/RTL.js";
 import { TrainingDataProvider } from './contexts/TrainingDataContext';
 
 const MainApp = () => {
+  const [jwtToken, setJwtToken] = useState(null);
+  useEffect(() => {
+    fetchSession().then(token => {
+      setJwtToken(token);
+    });
+  }, []);
+  
   return (
     <TrainingDataProvider>
       <HashRouter>
