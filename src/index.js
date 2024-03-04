@@ -23,4 +23,3 @@ ReactDOM.render(
   </TrainingDataProvider>,
   document.getElementById("root")
 );
-//comment
