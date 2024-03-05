@@ -1,19 +1,5 @@
-// useGarminConnect.js
-import { useState, useEffect } from 'react';
-import { fetchSession } from './sessionManager';
-
-export const useGarminConnect = () => {
-  const [jwtToken, setJwtToken] = useState(null);
-  const [statusMessage, setStatusMessage] = useState('');
-
-  useEffect(() => {
-    fetchSession().then(token => {
-      setJwtToken(token);
-    });
-  }, []);
-
-  useEffect(() => {
-    const checkForGarminCallback = async () => {
+export const checkForGarminCallback = async () => {
+      let jwtToken = sessionStorage.getItem('jwtToken');
       if (sessionStorage.getItem('oauthInProgress') === 'true' && jwtToken) {
         sessionStorage.removeItem('oauthInProgress');
         const urlParams = new URLSearchParams(window.location.search);
@@ -34,20 +20,18 @@ export const useGarminConnect = () => {
               })
             });
             if (response.ok) {
-              setStatusMessage('Successfully connected to Garmin! You can now use Garmin services.');
+              console.log('Successfully connected to Garmin! You can now use Garmin services.');
             } else {
-              setStatusMessage('Could not connect to Garmin.');
+              console.log('Could not connect to Garmin.');
             }
           } catch (error) {
-            setStatusMessage(`Error: ${error.message}`);
+            console.log(`Error: ${error.message}`);
           }
         }
       }
     };
-    checkForGarminCallback();
-  }, [jwtToken]);
 
-  const initiateGarminOAuth = async () => {
+  export const initiateGarminOAuth = async () => {
     console.log("Initiating Garmin OAuth process");
     sessionStorage.setItem('oauthInProgress', 'true');
     let jwtToken = sessionStorage.getItem('jwtToken');
@@ -70,6 +54,3 @@ export const useGarminConnect = () => {
      setStatusMessage(`Error: ${error.message}`);
     } 
   };
-
-  return { initiateGarminOAuth, jwtToken, statusMessage };
-};
