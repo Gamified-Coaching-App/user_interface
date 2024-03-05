@@ -16,6 +16,13 @@ export const TrainingDataProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const { jwtToken } = useAuth();
 
+  useEffect(() => {
+    // This ensures refreshData is called only if jwtToken is not null.
+    if (jwtToken) {
+      refreshData();
+    }
+  }, [jwtToken]);
+
   const refreshData = async () => {
 
     if (!jwtToken) {
