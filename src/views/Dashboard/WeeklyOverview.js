@@ -7,76 +7,104 @@ import TrainingDataContext from '../../contexts/TrainingDataContext';
 
 const WeeklyOverview = () => {
   const { trainingData, refreshData, loading, error } = useContext(TrainingDataContext);
-  const [summaryData, setSummaryData] = useState({ RUNNING: 0, SWIMMING: 0, OTHER: 0 });
 
+  const [summaryData, setSummaryData] = useState({ RUNNING: 0, STRENGTH_CONDITIONING: 0, OTHER: 0 });
+  const [runningData, setRunningData] = useState({ Monday: 0, Tuesday: 0, Wednesday: 0, Thursday: 0, Friday: 0, Saturday: 0, Sunday: 0 });
+  const [totalDistance, setTotalDistance] = useState(0);
+  const [totalDuration, setTotalDuration] = useState(0);
+
+  // For weekly aggregate
   useEffect(() => {
-    console.log('trainingData:', trainingData); // Check what trainingData contains
+    let newTotalDuration = 0;
     if (trainingData && trainingData.length > 0) {
-      // Process the fetched training data to summarize it by activity type
       const newSummary = trainingData.reduce((acc, activity) => {
-        const type = activity.activity_type; // Use the activity_type field to categorize the activity
-        const distanceKm = activity.distance_meters_total / 1000; // Convert distance from meters to kilometers
-        acc[type] = (acc[type] || 0) + distanceKm; // Sum up distances by type
+        const type = activity.activity_type;
+        const duration = activity.duration; 
+        const [hours, minutes, seconds] = duration.split(':').map(Number);
+        const timeHours = hours + minutes / 60 + seconds / 3600;
+        acc[type] = (acc[type] || 0) + timeHours;
+        newTotalDuration += timeHours;
+
         return acc;
       }, { RUNNING: 0, STRENGTH_CONDITIONING: 0, OTHER: 0 });
-
-      console.log('newSummary:', newSummary); // Check what newSummary contains
       setSummaryData(newSummary);
+      setTotalDuration(newTotalDuration);
     } else {
-      setSummaryData({ RUNNING: 0, STRENGTH_CONDITIONING: 0, OTHER: 0 }); // Fallback to empty data
+      setSummaryData({ RUNNING: 0, STRENGTH_CONDITIONING: 0, OTHER: 0 });
+      setTotalDuration(0);
+    }
+  }, [trainingData]);
+
+  // For running
+  useEffect(() => {
+    let localTotalDistance = 0;
+    if (trainingData && trainingData.length > 0) {
+      const initialRunningData = { Monday: 0, Tuesday: 0, Wednesday: 0, Thursday: 0, Friday: 0, Saturday: 0, Sunday: 0 };
+      const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+      const newRunningData = trainingData.reduce((acc, activity) => {
+        if (activity.activity_type === "RUNNING") {
+
+          // convert timestamp to day of the week
+          const validTimestamp = activity.timestamp_local.slice(0, 10) + 'T' + activity.timestamp_local.slice(11);
+          const date = new Date(validTimestamp); 
+          let dayOfWeek = date.getDay(); // Sunday = 0, Saturday = 8
+          dayOfWeek = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+          const day = daysOfWeek[dayOfWeek];
+          const length = activity.distance_meters_total;
+
+          acc[day] += length;
+          localTotalDistance += length;
+        }
+        return acc;
+      }, initialRunningData);
+
+      setRunningData(newRunningData);
+      setTotalDistance(localTotalDistance);
     }
   }, [trainingData]);
   
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error fetching data: {error}</div>;
 
-  let totalDistance = 0;
-  const chartData = [];
   const summaryChartData = [];
+  summaryChartData.push(...Object.entries(summaryData).map(([activityType, hours]) => {
+    let displayName = activityType; // Default to the activityType itself
+    if (activityType === 'OTHER') displayName = 'OTHER';
+    else if (activityType === 'STRENGTH_CONDITIONING') displayName = 'STRENGTH';
+    
+    return { name: displayName, Hours: Number(hours.toFixed(2)) };
+  }));
 
-  if (summaryData) {
-    totalDistance = Object.values(summaryData).reduce((acc, distance) => acc + distance, 0);
-
-    const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    chartData.push(...daysOfWeek.map(day => ({
-      name: day,
-      Distance: summaryData[day]?.Distance || 0,
-      MaxHeartRate: summaryData[day]?.MaxHeartRate || 0,
-      Elevation: summaryData[day]?.Elevation || 0,
-    })));
-
-    summaryChartData.push(...Object.entries(summaryData).map(([activityType, distance]) => ({
-      name: activityType === 'OTHER' ? 'CYCLING' : activityType,
-      name: activityType === 'STRENGTH_CONDITIONING' ? 'STRENGTH' : activityType,
-      Distance: distance,
-    })));
-  }
-
+  const summaryRunningData = Object.keys(runningData).map(day => ({
+    name: day,
+    Distance: Number((runningData[day] / 1000).toFixed(2)) // Convert to kilometers if distance is in meters
+  }));
 
   return (
     <Flex direction='column' pt={{ base: "120px", md: "75px" }}>
       <Box mb="6">
         <Text fontSize='lg' color='#fff' fontWeight='bold' mb="4">
-          Your Weekly Summary
+          You have worked out {Math.round(totalDuration)} hours this week
         </Text>
         {summaryData && (
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="50%" height={300}>
             <BarChart data={summaryChartData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" tick={{ fill: '#fff' }} />
-              <YAxis tickFormatter={(tick) => `${tick} km`} />
+              <YAxis tickFormatter={(tick) => `${tick} h`} />
               <Tooltip />
               <Legend />
-              <Bar dataKey="Distance" fill="#82ca9d" />
+              <Bar dataKey="Hours" fill="#82ca9d" />
             </BarChart>
           </ResponsiveContainer>
         )}
         <Text fontSize='lg' color='#fff' fontWeight='bold' mb="4">
-          You have run {totalDistance} km so far this week
+          You have run {Math.round(totalDistance/1000)} km so far this week
         </Text>
-        {summaryData && (
-          <ResponsiveContainer width="100%" height={250}>
-            <ComposedChart data={chartData}>
+        {summaryRunningData && (
+          <ResponsiveContainer width="100%" height={300}>
+            <ComposedChart data={summaryRunningData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
                 dataKey="name" 
@@ -88,38 +116,9 @@ const WeeklyOverview = () => {
                 stroke="#8884d8" 
                 tickFormatter={(tick) => `${tick} km`}
               />
-              <YAxis 
-                yAxisId="right" 
-                orientation="right" 
-                stroke="#c9759c" 
-                tickFormatter={(tick) => `${tick} bpm`}
-              />
-              <YAxis 
-                yAxisId="rightAlt" 
-                orientation="right" 
-                stroke="#82ca9d" 
-                tickFormatter={(tick) => `${tick} m`}
-                axisLine={false}
-                tickLine={false}
-              />
               <Tooltip />
               <Legend />
               <Bar yAxisId="left" dataKey="Distance" fill="#8884d8" />
-              <Line 
-                yAxisId="right" 
-                type="monotone" 
-                dataKey="MaxHeartRate" 
-                stroke="#c9759c" 
-                strokeWidth={3} 
-                activeDot={{ r: 8 }} 
-              />
-              <Line 
-                yAxisId="rightAlt" 
-                type="monotone" 
-                dataKey="Elevation" 
-                stroke="#82ca9d" 
-                strokeWidth={3} 
-              />
             </ComposedChart>
           </ResponsiveContainer>
         )}

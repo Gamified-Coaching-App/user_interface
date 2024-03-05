@@ -5,7 +5,6 @@ import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from 'aws-amplify';
 import config from './aws-exports';
-import { fetchSession } from './components/Authentication/sessionManager';
 import {
   withAuthenticator,
 } from "@aws-amplify/ui-react";
@@ -18,16 +17,13 @@ import RTLLayout from "layouts/RTL.js";
 import { TrainingDataProvider } from './contexts/TrainingDataContext';
 import { LeaderboardDataProvider } from './contexts/LeaderboardDataContext';
 
-const MainApp = () => {
-  const [jwtToken, setJwtToken] = useState(null);
-  useEffect(() => {
-    fetchSession().then(token => {
-      setJwtToken(token);
-    });
-  }, []);
+import { AuthProvider } from './components/Authentication/authContext';
+
+const MainApp = () => {  
   
   return (
     <LeaderboardDataProvider>
+    <AuthProvider>
     <TrainingDataProvider>
       <HashRouter>
         <Switch> 
@@ -37,6 +33,7 @@ const MainApp = () => {
         </Switch>
       </HashRouter>
     </TrainingDataProvider>
+    </AuthProvider>
     </LeaderboardDataProvider>
   );
 };
