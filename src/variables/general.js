@@ -266,7 +266,7 @@ export const fetchChallenges = async () => {
 
     const data = await response.json();
     // Process the fetched data here
-    console.log('Fetched data:', data);
+    console.log('Fetched data for challenges:', data);
     
     return data; // You can return the data if needed
   } catch (error) {

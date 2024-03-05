@@ -35,7 +35,6 @@ export const TrainingDataProvider = ({ children }) => {
     try {
       
       const url = 'https://88pqpqlu5f.execute-api.eu-west-2.amazonaws.com/dev_1/frontend'; // Use your actual API endpoint
-
       const response = await fetch(url, {
         method: 'POST', // or 'GET' if your API requires
         headers: new Headers({
@@ -47,9 +46,9 @@ export const TrainingDataProvider = ({ children }) => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      console.log('Fetching data...');
+      console.log('Fetching training data...');
       const data = await response.json();
-      console.log('Data received:', data);
+      console.log('Training data received:', data);
       setTrainingData(data); // Assuming the JSON response is the data you want
       setLoading(false);
     } catch (error) {

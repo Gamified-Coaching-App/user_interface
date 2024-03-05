@@ -17,6 +17,7 @@ import AdminLayout from "layouts/Admin.js";
 import RTLLayout from "layouts/RTL.js";
 import { TrainingDataProvider } from './contexts/TrainingDataContext';
 import { LeaderboardDataProvider } from './contexts/LeaderboardDataContext';
+import { ChallengesDataProvider } from './contexts/ChallengesDataContext';
 
 import { AuthProvider } from './components/Authentication/authContext';
 
@@ -32,6 +33,7 @@ const MainApp = ({ signOut: amplifySignOut }) => {
     <AuthProvider>
       <TrainingDataProvider>
         <LeaderboardDataProvider>
+        <ChallengesDataProvider>
           <HashRouter>
           <Flex position="fixed" top="40" right="150" p="4" justifyContent="flex-end"  zIndex="10">
               <Button
@@ -51,6 +53,7 @@ const MainApp = ({ signOut: amplifySignOut }) => {
               <Redirect from={`/`} to='/admin/dashboard' />
             </Switch>
           </HashRouter>
+          </ChallengesDataProvider>
         </LeaderboardDataProvider>
       </TrainingDataProvider>
     </AuthProvider>
