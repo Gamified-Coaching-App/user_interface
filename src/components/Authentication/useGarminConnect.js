@@ -65,7 +65,7 @@ export const useGarminConnect = () => {
       });
       const data = await response.json();
       console.log(data.redirect_url);
-      window.location.href = data.redirect_url;
+      //window.location.href = data.redirect_url;
     } catch (error) {
      setStatusMessage(`Error: ${error.message}`);
     } 
