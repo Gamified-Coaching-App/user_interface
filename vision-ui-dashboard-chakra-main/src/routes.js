@@ -1,3 +1,21 @@
+/*!
+
+=========================================================
+* Vision UI Free Chakra - v1.0.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/vision-ui-free-chakra
+* Copyright 2021 Creative Tim (https://www.creative-tim.com/)
+* Licensed under MIT (https://github.com/creativetimofficial/vision-ui-free-chakra/blob/master LICENSE.md)
+
+* Design and Coded by Simmmple & Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+*/
+
 // import
 import Dashboard from "views/Dashboard/Dashboard.js";
 import Tables from "views/Dashboard/Tables.js";
@@ -8,7 +26,6 @@ import Profile from "views/Dashboard/Profile.js";
 import SignIn from "views/Pages/SignIn.js";
 import SignUp from "views/Pages/SignUp.js";
 import WeeklyOverview from "views/Dashboard/WeeklyOverview.js"
-import GarminAuth from "components/Authentication/GarminAuth";
 
 import {
   HomeIcon,
@@ -53,12 +70,6 @@ var dashRoutes = [
     component: Billing,
     layout: "/admin",
   },
-  {
-    path: "/garmin-auth",
-    name: "Garmin Auth",
-    component: GarminAuth,
-    layout: "/auth",
-  },
   /* Tiril: removed right-to-left functionality
   {
     path: "/rtl-support-page",
@@ -68,7 +79,7 @@ var dashRoutes = [
     component: RTLPage,
     layout: "/rtl",
   },
-  
+  */
   {
     name: "ACCOUNT PAGES",
     category: "account",
@@ -85,7 +96,7 @@ var dashRoutes = [
         component: Profile,
         layout: "/admin",
       }, */
-      /*{
+      {
         path: "/signin",
         name: "Sign In",
         rtlName: "لوحة القيادة",
@@ -103,6 +114,6 @@ var dashRoutes = [
         layout: "/auth",
       },
     ],
-  },*/
+  },
 ];
 export default dashRoutes;

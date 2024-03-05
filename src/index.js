@@ -16,6 +16,7 @@ Amplify.configure(config);
 import AdminLayout from "layouts/Admin.js";
 import RTLLayout from "layouts/RTL.js";
 import { TrainingDataProvider } from './contexts/TrainingDataContext';
+import GarminAuth from "components/Authentication/GarminAuth";
 
 const MainApp = () => {
   const [jwtToken, setJwtToken] = useState(null);
@@ -24,13 +25,14 @@ const MainApp = () => {
       setJwtToken(token);
     });
   }, []);
-  
+
   return (
     <TrainingDataProvider>
       <HashRouter>
         <Switch> 
           <Route path={`/admin`} component={AdminLayout} />
           <Route path={`/rtl`} component={RTLLayout} />
+          <Route path="/garmin-auth" component={GarminAuth} />
           <Redirect from={`/`} to='/admin/dashboard' />
         </Switch>
       </HashRouter>
