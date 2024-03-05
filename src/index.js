@@ -16,6 +16,7 @@ Amplify.configure(config);
 import AdminLayout from "layouts/Admin.js";
 import RTLLayout from "layouts/RTL.js";
 import { TrainingDataProvider } from './contexts/TrainingDataContext';
+import { LeaderboardDataProvider } from './contexts/LeaderboardDataContext';
 
 const MainApp = () => {
   const [jwtToken, setJwtToken] = useState(null);
@@ -26,6 +27,7 @@ const MainApp = () => {
   }, []);
   
   return (
+    <LeaderboardDataProvider>
     <TrainingDataProvider>
       <HashRouter>
         <Switch> 
@@ -35,6 +37,7 @@ const MainApp = () => {
         </Switch>
       </HashRouter>
     </TrainingDataProvider>
+    </LeaderboardDataProvider>
   );
 };
 

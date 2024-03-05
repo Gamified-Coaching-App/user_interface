@@ -19,6 +19,7 @@
 // import
 import Dashboard from "views/Dashboard/Dashboard.js";
 import Tables from "views/Dashboard/Tables.js";
+import Leaderboard from  "views/Dashboard/Leaderboard.js";
 import Billing from "views/Dashboard/Billing.js";
 import ChallengesPage from "views/Dashboard/Challenges.js";
 import RTLPage from "views/RTL/RTLPage.js";
@@ -59,7 +60,7 @@ var dashRoutes = [
     name: "Leaderboard",
     rtlName: "لوحة القيادة",
     icon: <StatsIcon color='inherit' />,
-    component: Tables,
+    component: Leaderboard,
     layout: "/admin",
   },
   {

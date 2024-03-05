@@ -56,19 +56,30 @@ import {
 } from "variables/general";
 
 
+
 function Billing() {
   const [loading, setLoading] = useState(true);
   const [challengesData, setChallengesData] = useState([]);
+  const [dataFetched, setDataFetched] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchChallenges();
       setChallengesData(data);
+      setDataFetched(true);
       setLoading(false);
     };
 
-    fetchData();
-  }, []); // Empty dependency array ensures this effect runs only once on mount
+    console.log(dataFetched);
+    if (!dataFetched){
+      fetchData();
+    }
+  }, [dataFetched]); // Empty dependency array ensures this effect runs only once on mount
+
+  useEffect(() => {
+    console.log('dataFetched:', dataFetched);
+  }, [dataFetched]); // Log the value of dataFetched whenever it changes
+
   return (
     <Flex direction='column' pt={{ base: "120px", md: "75px" }} mx='auto'>
       <Grid templateColumns="1fr">
