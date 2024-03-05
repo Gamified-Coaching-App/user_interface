@@ -23,11 +23,13 @@ import { FaTwitter, FaFacebook } from "react-icons/fa";
 // Garmin OAuth import
 import { initiateGarminOAuth, checkForGarminCallback  } from "../Authentication/useGarminConnect";
 
-let jwtToken = sessionStorage.getItem('jwtToken');
+import { useAuth } from '../Authentication/authContext';
 
 export default function Configurator(props) {
   const { secondary, isOpen, onClose, fixed, ...rest } = props;
   const [switched, setSwitched] = useState(props.isChecked);
+
+  const { jwtToken } = useAuth();
 
   const [oauthInProgress, setOauthInProgress] = useState(false);
 
