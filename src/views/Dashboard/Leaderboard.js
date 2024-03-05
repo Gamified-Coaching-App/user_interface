@@ -67,18 +67,10 @@ const Leaderboard = () => {
               Leaderboard
             </Text>
             <Flex align='center'>
-              <Icon
-                as={AiFillCheckCircle}
-                color='green.500'
-                w='15px'
-                h='15px'
-                me='5px'
-              />
               <Text fontSize='sm' color='gray.400' fontWeight='normal'>
                 <Text fontWeight='bold' as='span' color='gray.400'>
-                  +30%
+                  Your username:  {localStorage.getItem("username")}
                 </Text>{" "}
-                this month
               </Text>
             </Flex>
           </Flex>
