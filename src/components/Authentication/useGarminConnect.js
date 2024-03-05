@@ -48,9 +48,10 @@ export const useGarminConnect = () => {
   }, [jwtToken]);
 
   const initiateGarminOAuth = async () => {
-    console.log("Initiating Garmin OAuth process")
+    console.log("Initiating Garmin OAuth process");
     sessionStorage.setItem('oauthInProgress', 'true');
-    console.log("Initiating Garmin OAuth process")
+    let jwtToken = sessionStorage.getItem('jwtToken');
+    console.log("Token for API request:", jwtToken);
     
     try {
       const apiGatewayUrl = 'https://15ta4l9xxf.execute-api.eu-west-2.amazonaws.com/dev_1/request-token';
