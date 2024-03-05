@@ -17,15 +17,31 @@ import {
 import GitHubButton from "react-github-btn";
 import { Separator } from "components/Separator/Separator";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaTwitter, FaFacebook } from "react-icons/fa";
 
 // Garmin OAuth import
-import { useGarminConnect } from "../Authentication/useGarminConnect";
+import { initiateGarminOAuth, checkForGarminCallback  } from "../Authentication/useGarminConnect";
+
+let jwtToken = sessionStorage.getItem('jwtToken');
 
 export default function Configurator(props) {
   const { secondary, isOpen, onClose, fixed, ...rest } = props;
   const [switched, setSwitched] = useState(props.isChecked);
+
+  const [oauthInProgress, setOauthInProgress] = useState(false);
+
+   // Effect to track the 'oauthInProgress' state based on session storage
+   useEffect(() => {
+    const oauthInProgressValue = sessionStorage.getItem('oauthInProgress') === 'true';
+    setOauthInProgress(oauthInProgressValue);
+    }, []);
+    
+    useEffect(() => {
+      if (oauthInProgress) {
+      checkForGarminCallback();
+    }
+  }, [oauthInProgress]); // Depend on jwtToken and the state tracking 'oauthInProgress'
 
   // Chakra Color Mode
   let fixedDisplay = "flex";
@@ -35,9 +51,6 @@ export default function Configurator(props) {
   let colorButton = "white";
   const secondaryButtonColor = "white";
   const settingsRef = React.useRef();
-
-  // Garmin Connect stuff
-  const { initiateGarminOAuth, jwtToken } = useGarminConnect();
   
   return (
     <>
@@ -87,8 +100,7 @@ export default function Configurator(props) {
               </Box>
                 <Box>
                     <Button
-                      onClick={initiateGarminOAuth} 
-                      //onClick={()) => console.log('Directly inside component')} 
+                      onClick={initiateGarminOAuth}
                       disabled={!jwtToken}
                       w='100%'
                       color={colorButton}
