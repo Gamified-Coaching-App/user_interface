@@ -22,19 +22,19 @@ import { AuthProvider } from './components/Authentication/authContext';
 const MainApp = () => {  
   
   return (
-    <LeaderboardDataProvider>
     <AuthProvider>
-    <TrainingDataProvider>
-      <HashRouter>
-        <Switch> 
-          <Route path={`/admin`} component={AdminLayout} />
-          <Route path={`/rtl`} component={RTLLayout} />
-          <Redirect from={`/`} to='/admin/dashboard' />
-        </Switch>
-      </HashRouter>
-    </TrainingDataProvider>
+      <TrainingDataProvider>
+        <LeaderboardDataProvider>
+          <HashRouter>
+            <Switch> 
+              <Route path={`/admin`} component={AdminLayout} />
+              <Route path={`/rtl`} component={RTLLayout} />
+              <Redirect from={`/`} to='/admin/dashboard' />
+            </Switch>
+          </HashRouter>
+        </LeaderboardDataProvider>
+      </TrainingDataProvider>
     </AuthProvider>
-    </LeaderboardDataProvider>
   );
 };
 
