@@ -4,7 +4,6 @@ export const checkForGarminCallback = async () => {
         localStorage.removeItem('oauthInProgress');
         console.log('URL search params:', window.location.search);
         const urlParams = new URLSearchParams(window.location.search);
-        console.log("URL: ", urlParams);
         const oauthVerifier = urlParams.get('oauth_verifier');
         const oauthToken = urlParams.get('oauth_token');
         if (oauthVerifier && oauthToken) {
@@ -22,7 +21,7 @@ export const checkForGarminCallback = async () => {
               })
             });
             if (response.ok) {
-              console.log('Successfully connected to Garmin! You can now use Garmin services.');
+              console.log('Successfully connected to Garmin!');
             } else {
               console.log('Could not connect to Garmin.');
             }
