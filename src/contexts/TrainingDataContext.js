@@ -1,6 +1,6 @@
 // TrainingDataContext.js
 import React, { createContext, useState, useEffect } from 'react';
-import { useAuth } from '../Authentication/authContext';
+import { useAuth } from 'components/Authentication/authContext';
 
 const TrainingDataContext = createContext({
   trainingData: null,
@@ -14,11 +14,19 @@ export const TrainingDataProvider = ({ children }) => {
   const [trainingData, setTrainingData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { jwtToken } = useAuth();
 
   const refreshData = async () => {
+
+    if (!jwtToken) {
+      console.log('No JWT token available, skipping data fetch.');
+      setLoading(false); 
+      return;
+    }
+
     setLoading(true);
     try {
-      const { jwtToken } = useAuth();
+      
       const url = 'https://88pqpqlu5f.execute-api.eu-west-2.amazonaws.com/dev_1/frontend'; // Use your actual API endpoint
 
       const response = await fetch(url, {
@@ -29,7 +37,6 @@ export const TrainingDataProvider = ({ children }) => {
         }),
         body: JSON.stringify({}), // If the API expects a POST body, even if it's empty
       });
-
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

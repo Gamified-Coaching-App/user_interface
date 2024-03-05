@@ -15,7 +15,6 @@ const WeeklyOverview = () => {
 
   // For weekly aggregate
   useEffect(() => {
-    console.log('trainingData:', trainingData); // Check what trainingData contains
     let newTotalDuration = 0;
     if (trainingData && trainingData.length > 0) {
       const newSummary = trainingData.reduce((acc, activity) => {
@@ -35,7 +34,6 @@ const WeeklyOverview = () => {
       setTotalDuration(0);
     }
   }, [trainingData]);
-  //console.log('summaryData:', summaryData);
 
   // For running
   useEffect(() => {
@@ -46,8 +44,6 @@ const WeeklyOverview = () => {
 
       const newRunningData = trainingData.reduce((acc, activity) => {
         if (activity.activity_type === "RUNNING") {
-          console.log(activity.activity_type);
-          console.log(activity.timestamp_local);
 
           // convert timestamp to day of the week
           const validTimestamp = activity.timestamp_local.slice(0, 10) + 'T' + activity.timestamp_local.slice(11);
@@ -56,7 +52,6 @@ const WeeklyOverview = () => {
           dayOfWeek = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
           const day = daysOfWeek[dayOfWeek];
           const length = activity.distance_meters_total;
-          console.log('day of week:', day);
 
           acc[day] += length;
           localTotalDistance += length;
@@ -68,8 +63,6 @@ const WeeklyOverview = () => {
       setTotalDistance(localTotalDistance);
     }
   }, [trainingData]);
-  console.log('runningData:', runningData);
-  console.log('total distance', totalDistance);
   
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error fetching data: {error}</div>;
