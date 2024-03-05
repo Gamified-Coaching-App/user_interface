@@ -48,8 +48,10 @@ export const useGarminConnect = () => {
   }, [jwtToken]);
 
   const initiateGarminOAuth = async () => {
+    console.log("Initiating Garmin OAuth process")
     sessionStorage.setItem('oauthInProgress', 'true');
     console.log("Initiating Garmin OAuth process")
+    
     try {
       const apiGatewayUrl = 'https://15ta4l9xxf.execute-api.eu-west-2.amazonaws.com/dev_1/request-token';
       const response = await fetch(apiGatewayUrl, {
@@ -61,10 +63,11 @@ export const useGarminConnect = () => {
         body: JSON.stringify({})
       });
       const data = await response.json();
+      console.log(data.redirect_url);
       window.location.href = data.redirect_url;
     } catch (error) {
       setStatusMessage(`Error: ${error.message}`);
-    }
+    } 
   };
 
   return { initiateGarminOAuth, jwtToken, statusMessage };
