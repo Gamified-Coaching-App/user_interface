@@ -33,7 +33,7 @@ const MainApp = ({ signOut: amplifySignOut }) => {
       <TrainingDataProvider>
         <LeaderboardDataProvider>
           <HashRouter>
-          <Flex position="fixed" top="40" right="100" p="4" justifyContent="flex-end"  zIndex="10">
+          <Flex position="fixed" top="40" right="150" p="4" justifyContent="flex-end"  zIndex="10">
               <Button
                   onClick={signOut}
                   w='100%'

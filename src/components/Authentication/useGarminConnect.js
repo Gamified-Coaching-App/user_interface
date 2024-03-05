@@ -1,8 +1,10 @@
 export const checkForGarminCallback = async () => {
       let jwtToken = sessionStorage.getItem('jwtToken');
-      if (sessionStorage.getItem('oauthInProgress') === 'true' && jwtToken) {
-        sessionStorage.removeItem('oauthInProgress');
+      if (localStorage.getItem('oauthInProgress') === 'true' && jwtToken) {
+        localStorage.removeItem('oauthInProgress');
+        console.log('URL search params:', window.location.search);
         const urlParams = new URLSearchParams(window.location.search);
+        console.log("URL: ", urlParams);
         const oauthVerifier = urlParams.get('oauth_verifier');
         const oauthToken = urlParams.get('oauth_token');
         if (oauthVerifier && oauthToken) {
@@ -28,12 +30,15 @@ export const checkForGarminCallback = async () => {
             console.log(`Error: ${error.message}`);
           }
         }
+        else {
+          console.log('Could not retrieve params from URL.');
+        }
       }
     };
 
   export const initiateGarminOAuth = async () => {
     console.log("Initiating Garmin OAuth process");
-    sessionStorage.setItem('oauthInProgress', 'true');
+    localStorage.setItem('oauthInProgress', 'true');
     let jwtToken = sessionStorage.getItem('jwtToken');
     console.log("Token for API request:", jwtToken);
     

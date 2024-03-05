@@ -35,7 +35,7 @@ export default function Configurator(props) {
 
    // Effect to track the 'oauthInProgress' state based on session storage
    useEffect(() => {
-    const oauthInProgressValue = sessionStorage.getItem('oauthInProgress') === 'true';
+    const oauthInProgressValue = localStorage.getItem('oauthInProgress') === 'true';
     setOauthInProgress(oauthInProgressValue);
     }, []);
     
