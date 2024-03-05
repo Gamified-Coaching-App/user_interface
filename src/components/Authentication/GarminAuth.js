@@ -71,12 +71,12 @@ function GarminAuth({ signOut: amplifySignOut }) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': jwtToken
+          'Authorization': sessionStorage.jwtToken
         },
         body: JSON.stringify({})
       });
       const data = await response.json();
-      window.location.href = data.redirect_url; // User is redirected to Garmin for OAuth
+      //window.location.href = data.redirect_url; // User is redirected to Garmin for OAuth
     } catch (error) {
       console.error("Error initiating Garmin OAuth:", error);
       setStatusMessage(`Error: ${error.message}`);

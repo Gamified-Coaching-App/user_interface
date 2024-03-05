@@ -14,16 +14,16 @@ const WeeklyOverview = () => {
     if (trainingData && trainingData.length > 0) {
       // Process the fetched training data to summarize it by activity type
       const newSummary = trainingData.reduce((acc, activity) => {
-        const type = activity.activity_type; // Use the activity_type field to categorize the activity
-        const distanceKm = activity.distance_meters_total / 1000; // Convert distance from meters to kilometers
-        acc[type] = (acc[type] || 0) + distanceKm; // Sum up distances by type
+        const type = activity.activity_type;
+        const distanceKm = activity.distance_meters_total / 1000;
+        acc[type] = (acc[type] || 0) + distanceKm;
         return acc;
       }, { RUNNING: 0, STRENGTH_CONDITIONING: 0, OTHER: 0 });
 
-      console.log('newSummary:', newSummary); // Check what newSummary contains
+      console.log('newSummary:', newSummary);
       setSummaryData(newSummary);
     } else {
-      setSummaryData({ RUNNING: 0, STRENGTH_CONDITIONING: 0, OTHER: 0 }); // Fallback to empty data
+      setSummaryData({ RUNNING: 0, STRENGTH_CONDITIONING: 0, OTHER: 0 });
     }
   }, [trainingData]);
   
