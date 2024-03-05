@@ -54,7 +54,6 @@ import LeaderboardDataContext from '../../contexts/LeaderboardDataContext';
 
 const Leaderboard = () => {
   const { leaderboardData, refreshLeaderboard, loading, error } = useContext(LeaderboardDataContext);
-  console.log('This is what I got', Object.entries(leaderboardData));
   if (loading) return <h1 style={{ color: 'white', textAlign: 'center' }}>Loading...</h1>
   if (error) return <h1 style={{ color: 'white', textAlign: 'center' }}>Error fetching the data</h1>
 
