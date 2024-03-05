@@ -53,7 +53,8 @@ export default function Configurator(props) {
   let colorButton = "white";
   const secondaryButtonColor = "white";
   const settingsRef = React.useRef();
-  
+
+  // PARTNERS CONNECT PAGE
   return (
     <>
       <Drawer
@@ -68,38 +69,15 @@ export default function Configurator(props) {
           <DrawerHeader pt='24px' px='24px'>
             <DrawerCloseButton color='white' />
             <Text color='white' fontSize='xl' fontWeight='bold' mt='16px'>
-              Vision UI Configurator
+              Settings
             </Text>
             <Text color='white' fontSize='md' mb='16px'>
-              See your dashboard options.
+              Connect to partners.
             </Text>
             <Separator />
           </DrawerHeader>
           <DrawerBody w='340px' ps='24px' pe='40px'>
             <Flex flexDirection='column'>
-              <Box
-                display={fixedDisplay}
-                justifyContent='space-between '
-                mb='20px'>
-                <DarkMode>
-                  <Text color='white' fontSize='md' fontWeight='600' mb='4px'>
-                    Navbar Fixed
-                  </Text>
-                  <Switch
-                    colorScheme='brand'
-                    isChecked={switched}
-                    onChange={(event) => {
-                      if (switched === true) {
-                        props.onSwitch(false);
-                        setSwitched(false);
-                      } else {
-                        props.onSwitch(true);
-                        setSwitched(true);
-                      }
-                    }}
-                  />
-                </DarkMode>
-              </Box>
                 <Box>
                     <Button
                       onClick={initiateGarminOAuth}

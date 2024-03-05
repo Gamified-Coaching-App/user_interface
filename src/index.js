@@ -8,6 +8,7 @@ import config from './aws-exports';
 import {
   withAuthenticator,
 } from "@aws-amplify/ui-react";
+import { Button, Text, Flex } from "@chakra-ui/react";
 
 Amplify.configure(config);
 
@@ -19,13 +20,31 @@ import { LeaderboardDataProvider } from './contexts/LeaderboardDataContext';
 
 import { AuthProvider } from './components/Authentication/authContext';
 
-const MainApp = () => {  
+const MainApp = ({ signOut: amplifySignOut }) => { 
+  
+  const signOut = async () => {
+    sessionStorage.clear(); // This also clears the 'oauthInProgress' flag to start new OAuth process
+    localStorage.clear();
+    await amplifySignOut();
+  };
   
   return (
     <AuthProvider>
       <TrainingDataProvider>
         <LeaderboardDataProvider>
           <HashRouter>
+          <Flex position="fixed" top="40" right="100" p="4" justifyContent="flex-end"  zIndex="10">
+              <Button
+                  onClick={signOut}
+                  w='100%'
+                  color="white"
+                  fontSize='xs'
+                  variant='brand'
+                  px='20px'
+                  mb='16px'>
+                <Text display={{ sm: "none", md: "flex" }} fontWeight="bold">Sign Out</Text>
+              </Button>
+              </Flex>
             <Switch> 
               <Route path={`/admin`} component={AdminLayout} />
               <Route path={`/rtl`} component={RTLLayout} />
