@@ -1,4 +1,4 @@
-// Chakra Imports
+// Configurator.js
 import {
   Box,
   Button,
@@ -22,7 +22,6 @@ import { FaTwitter, FaFacebook } from "react-icons/fa";
 
 // Garmin OAuth import
 import { useGarminConnect } from "../Authentication/useGarminConnect";
-import { fetchSession } from '../Authentication/sessionManager';
 
 export default function Configurator(props) {
   const { secondary, isOpen, onClose, fixed, ...rest } = props;
