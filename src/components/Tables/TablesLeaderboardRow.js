@@ -60,7 +60,7 @@ function LeaderboardTableRow(props) {
               {position_new}
               {arrowIcon}
               <Text ml={0} color={"gray.500"}>
-                {position_new - position_old !== 0 ? Math.abs(position_new - position_old) : ""}
+                {position_old}
               </Text>
             </Flex>
           </Text>
