@@ -121,6 +121,12 @@ const Leaderboard = () => {
           </Table>
         </CardBody>
       </Card>
+      {leaderboardData.length === 0 && (
+            <Text color="white" textAlign="center" mt="5" fontWeight={"bold"}>
+              You are not assigned to a bucket yet. <br />
+              Wait until the new season starts at the beginning of the new month!
+            </Text>
+            )}
       <Button onClick={refreshLeaderboard} colorScheme="blue" mt="4" alignSelf="center" width="200px">
         Refresh Data
       </Button>

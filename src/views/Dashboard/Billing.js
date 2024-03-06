@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Flex, Grid , Box} from '@chakra-ui/react';
+import { Flex, Grid , Box, Text} from '@chakra-ui/react';
 import ChallengesCard from 'components/Tables/ChallengesCard';
 import ChallengesDataContext from '../../contexts/ChallengesDataContext';
 
@@ -32,6 +32,12 @@ function Billing() {
           )}
         </Box>
       </Grid>
+      {challengesData.length === 0 && (
+            <Text color="white" textAlign="center" mt="5" fontWeight={"bold"}>
+              There are no challenges for you yet! <br />
+              Season start is right around the corner - then you will see the first challgenes coming up!
+            </Text>
+            )}
     </Flex>
   );
 }
