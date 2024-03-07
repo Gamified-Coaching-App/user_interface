@@ -32,10 +32,10 @@ function Billing() {
           )}
         </Box>
       </Grid>
-      {challengesData.length === 0 && (
+      {challengesData.length === 0 && loading === false && (
             <Text color="white" textAlign="center" mt="5" fontWeight={"bold"}>
               There are no challenges for you yet! <br />
-              Season start is right around the corner - then you will see the first challgenes coming up!
+              Season start is right around the corner - then you will see the first challenges coming up!
             </Text>
             )}
     </Flex>
