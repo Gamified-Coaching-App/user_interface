@@ -15,7 +15,7 @@ function Billing() {
           ) : (
             <Grid templateColumns='1fr' gap='26px'>
               {challengesData
-                .sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
+                .sort((a, b) => new Date(a.end_date) - new Date(b.end_date))
                 .map((row) => (
                   <ChallengesCard
                     key={row.id}
