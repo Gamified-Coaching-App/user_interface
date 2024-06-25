@@ -1,133 +1,163 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Flex, Text, Button, Box } from '@chakra-ui/react';
-import {
-    ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart
-} from 'recharts';
+import React, { useContext, useState, useEffect, useRef } from 'react';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import bootstrapPlugin from '@fullcalendar/bootstrap';
+import { Flex, Box, Text } from '@chakra-ui/react';
 import TrainingDataContext from '../../contexts/TrainingDataContext';
+import CoachingDataContext from '../../contexts/CoachingDataContext';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootswatch/dist/cosmo/bootstrap.min.css';
+import '../../styles/custom-fullcalendar.css';
+import TrainingDetailsModal from './TrainingDetailsModal';
+import CoachingDetailsModal from './CoachingDetailsModal';
+import { useAuth } from 'components/Authentication/authContext';
 
-const WeeklyOverview = () => {
-  const { trainingData, refreshData, loading, error } = useContext(TrainingDataContext);
+const CalendarComponent = () => {
+  const { trainingData, refreshTrainingData, loading: trainingLoading, error: trainingError } = useContext(TrainingDataContext);
+  const { coachingData, loading: coachingLoading, error: coachingError } = useContext(CoachingDataContext);
+  const { jwtToken } = useAuth();
+  const [events, setEvents] = useState([]);
+  const [currentView, setCurrentView] = useState('dayGridMonth');
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [isTrainingModalOpen, setIsTrainingModalOpen] = useState(false);
+  const [isCoachingModalOpen, setIsCoachingModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const prevViewRef = useRef(currentView);
 
-  const [summaryData, setSummaryData] = useState({ RUNNING: 0, STRENGTH_CONDITIONING: 0, OTHER: 0 });
-  const [runningData, setRunningData] = useState({ Monday: 0, Tuesday: 0, Wednesday: 0, Thursday: 0, Friday: 0, Saturday: 0, Sunday: 0 });
-  const [totalDistance, setTotalDistance] = useState(0);
-  const [totalDuration, setTotalDuration] = useState(0);
-
-  // For weekly aggregate
   useEffect(() => {
-    let newTotalDuration = 0;
-    if (trainingData && trainingData.length > 0) {
-      const newSummary = trainingData.reduce((acc, activity) => {
-        const type = activity.activity_type;
-        const duration = activity.duration; 
-        const [hours, minutes, seconds] = duration.split(':').map(Number);
-        const timeHours = hours + minutes / 60 + seconds / 3600;
-        acc[type] = (acc[type] || 0) + timeHours;
-        newTotalDuration += timeHours;
+    if (jwtToken && trainingData && coachingData && !trainingLoading && !coachingLoading) {
+      const parsedTrainingEvents = trainingData.map((workout) => {
+        const pointsGained = JSON.parse(workout.points_gained);
+        const timestamp = workout.timestamp_local.substring(0, 10) + 'T' + workout.timestamp_local.substring(11);
+        const startDate = new Date(timestamp);
 
-        return acc;
-      }, { RUNNING: 0, STRENGTH_CONDITIONING: 0, OTHER: 0 });
-      setSummaryData(newSummary);
-      setTotalDuration(newTotalDuration);
-    } else {
-      setSummaryData({ RUNNING: 0, STRENGTH_CONDITIONING: 0, OTHER: 0 });
-      setTotalDuration(0);
-    }
-  }, [trainingData]);
-
-  // For running
-  useEffect(() => {
-    let localTotalDistance = 0;
-    if (trainingData && trainingData.length > 0) {
-      const initialRunningData = { Monday: 0, Tuesday: 0, Wednesday: 0, Thursday: 0, Friday: 0, Saturday: 0, Sunday: 0 };
-      const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
-      const newRunningData = trainingData.reduce((acc, activity) => {
-        if (activity.activity_type === "RUNNING") {
-
-          // convert timestamp to day of the week
-          const validTimestamp = activity.timestamp_local.slice(0, 10) + 'T' + activity.timestamp_local.slice(11);
-          const date = new Date(validTimestamp); 
-          let dayOfWeek = date.getDay(); // Sunday = 0, Saturday = 8
-          dayOfWeek = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-          const day = daysOfWeek[dayOfWeek];
-          const length = activity.distance_meters_total;
-
-          acc[day] += length;
-          localTotalDistance += length;
+        if (isNaN(startDate.getTime())) {
+          console.error('Invalid date:', workout.timestamp_local);
         }
-        return acc;
-      }, initialRunningData);
 
-      setRunningData(newRunningData);
-      setTotalDistance(localTotalDistance);
+        return {
+          title: `Workout`,
+          start: startDate,
+          extendedProps: {
+            ...workout,
+            pointsGained,
+            eventType: 'TRAINING',
+          },
+          classNames: workout.activity_type === 'RUNNING' ? 'fc-event-dot-running' : 'fc-event-dot-other',
+        };
+      });
+
+      const parsedCoachingEvents = Object.entries(coachingData.workoutPlan).map(([key, value]) => {
+        const date = key.split('_')[0];
+        return {
+          title: `Coaching`,
+          start: new Date(date),
+          extendedProps: {
+            ...value,
+            eventType: 'COACHING',
+          },
+          classNames: value.type === 'RUNNING' ? 'fc-event-dot-running' : 'fc-event-dot-other',
+        };
+      });
+
+      setEvents([...parsedTrainingEvents, ...parsedCoachingEvents]);
     }
-  }, [trainingData]);
+  }, [trainingData, trainingLoading, coachingData, coachingLoading, jwtToken]);
+
+  const handleEventClick = (clickInfo) => {
+    setSelectedEvent(clickInfo.event.extendedProps);
+    if (clickInfo.event.extendedProps.eventType === 'TRAINING') {
+      setIsTrainingModalOpen(true);
+    } else if (clickInfo.event.extendedProps.eventType === 'COACHING') {
+      setIsCoachingModalOpen(true);
+    }
+  };
+
+  const handleDatesSet = (dateInfo) => {
+    const { start, end, view } = dateInfo;
+    const startDate = start.toISOString().split('T')[0];
+    const endDate = end.toISOString().split('T')[0];
+
+    // Log the view changes and the dates
+    console.log(`View changed to: ${startDate} to ${endDate}, View: ${view.type}`);
+
+    if (view.type !== prevViewRef.current || currentView !== view.type || startDate !== currentDate.toISOString().split('T')[0]) {
+      setCurrentView(view.type);
+      setCurrentDate(view.currentStart);
   
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error fetching data: {error}</div>;
+      // Only refresh training data on view change
+      refreshTrainingData(startDate, endDate);
+      prevViewRef.current = view.type;
+    }
+  };
 
-  const summaryChartData = [];
-  summaryChartData.push(...Object.entries(summaryData).map(([activityType, hours]) => {
-    let displayName = activityType; // Default to the activityType itself
-    if (activityType === 'OTHER') displayName = 'OTHER';
-    else if (activityType === 'STRENGTH_CONDITIONING') displayName = 'STRENGTH';
-    
-    return { name: displayName, Hours: Number(hours.toFixed(2)) };
-  }));
-
-  const summaryRunningData = Object.keys(runningData).map(day => ({
-    name: day,
-    Distance: Number((runningData[day] / 1000).toFixed(2)) // Convert to kilometers if distance is in meters
-  }));
+  if (trainingLoading || coachingLoading || trainingError || coachingError) {
+    if (trainingError) {
+      console.error('Error fetching training data:', trainingError);
+    }
+    if (coachingError) {
+      console.error('Error fetching coaching data:', coachingError);
+    }
+    return (
+      <Flex direction="column" pt={{ base: '120px', md: '75px' }}>
+        <Box mb="6">
+          <Text fontSize="lg" color="#fff" fontWeight="bold" mb="4">
+            Training Calendar
+          </Text>
+          <Box className="fullcalendar-container">
+            <FullCalendar
+              plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, bootstrapPlugin]}
+              themeSystem="bootstrap"
+              initialView={currentView}
+              initialDate={currentDate}
+              events={[]}
+              eventClick={handleEventClick}
+              datesSet={handleDatesSet}
+            />
+          </Box>
+        </Box>
+      </Flex>
+    );
+  }
 
   return (
-    <Flex direction='column' pt={{ base: "120px", md: "75px" }}>
+    <Flex direction="column" pt={{ base: '120px', md: '75px' }}>
       <Box mb="6">
-        <Text fontSize='lg' color='#fff' fontWeight='bold' mb="4">
-          You have worked out {Math.round(totalDuration)} hours this week
+        <Text fontSize="lg" color="#fff" fontWeight="bold" mb="4">
+          Training Calendar
         </Text>
-        {summaryData && (
-          <ResponsiveContainer width="50%" height={300}>
-            <BarChart data={summaryChartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" tick={{ fill: '#fff' }} />
-              <YAxis tickFormatter={(tick) => `${tick} h`} />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="Hours" fill="#82ca9d" />
-            </BarChart>
-          </ResponsiveContainer>
-        )}
-        <Text fontSize='lg' color='#fff' fontWeight='bold' mb="4">
-          You have run {Math.round(totalDistance/1000)} km so far this week
-        </Text>
-        {summaryRunningData && (
-          <ResponsiveContainer width="100%" height={300}>
-            <ComposedChart data={summaryRunningData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="name" 
-                tick={{ fill: '#fff' }}
-              />
-              <YAxis 
-                yAxisId="left" 
-                orientation="left" 
-                stroke="#8884d8" 
-                tickFormatter={(tick) => `${tick} km`}
-              />
-              <Tooltip />
-              <Legend />
-              <Bar yAxisId="left" dataKey="Distance" fill="#8884d8" />
-            </ComposedChart>
-          </ResponsiveContainer>
-        )}
+        <Box className="fullcalendar-container">
+          <FullCalendar
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, bootstrapPlugin]}
+            themeSystem="bootstrap"
+            initialView={currentView}
+            initialDate={currentDate}
+            events={events}
+            eventClick={handleEventClick}
+            datesSet={handleDatesSet}
+          />
+        </Box>
       </Box>
-      <Button onClick={refreshData} colorScheme="blue" mt="4" alignSelf="center" width="200px">
-        Refresh Data
-      </Button>
+
+      {selectedEvent && isTrainingModalOpen && (
+        <TrainingDetailsModal
+          isOpen={isTrainingModalOpen}
+          onClose={() => setIsTrainingModalOpen(false)}
+          eventDetails={selectedEvent}
+        />
+      )}
+
+      {selectedEvent && isCoachingModalOpen && (
+        <CoachingDetailsModal
+          isOpen={isCoachingModalOpen}
+          onClose={() => setIsCoachingModalOpen(false)}
+          eventDetails={selectedEvent.workout}
+        />
+      )}
     </Flex>
   );
 };
 
-export default WeeklyOverview;
+export default CalendarComponent;

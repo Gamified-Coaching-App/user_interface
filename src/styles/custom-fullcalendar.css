@@ -1,0 +1,34 @@
+/* FullCalendar custom styles */
+.fc {
+    color: white; /* Default text color */
+  }
+  
+  .fc .fc-toolbar-title {
+    color: white; /* Toolbar title color */
+  }
+  
+  .fc-daygrid-day-frame {
+    border: 1px solid white; /* Day cell borders */
+  }
+  
+  .fc-daygrid-event {
+    background-color: transparent; /* Transparent background for events */
+    border: none; /* Remove default border */
+    color: white; /* Default event text color */
+  }
+  
+  .fc-daygrid-day-number {
+    color: white; /* Day number color */
+  }
+  
+  /* Event dot marker based on activity type */
+  .fc-daygrid-event-dot {
+    border-radius: 50%;
+  }
+  
+  /* Tooltip styling */
+  .fc-event-main {
+    background-color: transparent; /* Transparent background */
+    border: none; /* Remove default border */
+  }
+  

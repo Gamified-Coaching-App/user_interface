@@ -12,12 +12,12 @@ import { Button, Text, Flex } from "@chakra-ui/react";
 
 Amplify.configure(config);
 
-//import AuthLayout from "layouts/Auth.js";
 import AdminLayout from "layouts/Admin.js";
 import RTLLayout from "layouts/RTL.js";
 import { TrainingDataProvider } from './contexts/TrainingDataContext';
 import { LeaderboardDataProvider } from './contexts/LeaderboardDataContext';
 import { ChallengesDataProvider } from './contexts/ChallengesDataContext';
+import { CoachingDataProvider } from './contexts/CoachingDataContext';
 
 import { AuthProvider } from './components/Authentication/authContext';
 
@@ -31,6 +31,7 @@ const MainApp = ({ signOut: amplifySignOut }) => {
   
   return (
     <AuthProvider>
+      <CoachingDataProvider>
       <TrainingDataProvider>
         <LeaderboardDataProvider>
         <ChallengesDataProvider>
@@ -56,6 +57,7 @@ const MainApp = ({ signOut: amplifySignOut }) => {
           </ChallengesDataProvider>
         </LeaderboardDataProvider>
       </TrainingDataProvider>
+      </CoachingDataProvider>
     </AuthProvider>
   );
 };

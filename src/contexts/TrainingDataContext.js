@@ -1,71 +1,105 @@
-// TrainingDataContext.js
 import React, { createContext, useState, useEffect } from 'react';
 import { useAuth } from 'components/Authentication/authContext';
 
 const TrainingDataContext = createContext({
-  trainingData: null,
-  refreshData: () => {},
+  trainingData: [],
+  refreshTrainingData: () => {},
+  updateTrainingData: () => {},
   loading: true,
   error: null,
 });
 
 export const TrainingDataProvider = ({ children }) => {
-
-  const [trainingData, setTrainingData] = useState(null);
+  const [trainingData, setTrainingData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { jwtToken } = useAuth();
+  const [fetchedRanges, setFetchedRanges] = useState([]); // Track fetched date ranges
 
   useEffect(() => {
-    // This ensures refreshData is called only if jwtToken is not null.
     if (jwtToken) {
-      refreshData();
+      refreshTrainingData(); // Fetch initial data for the last 60 days
     }
   }, [jwtToken]);
 
-  const refreshData = async () => {
-
+  const refreshTrainingData = async (startDate, endDate) => {
     if (!jwtToken) {
       console.log('No JWT token available, skipping data fetch.');
-      setLoading(false); 
+      setLoading(false);
+      return;
+    }
+
+    // Default to the last 60 days if no dates are provided
+    const end = endDate || new Date().toISOString().split('T')[0];
+    const start = startDate || new Date(new Date().setDate(new Date().getDate() - 60)).toISOString().split('T')[0];
+
+    // Check if the date range data already exists
+    console.log(`Requested training data for range: ${start} to ${end}`);
+    const rangeExists = fetchedRanges.some(range => {
+      const rangeStart = new Date(range.start);
+      const rangeEnd = new Date(range.end);
+      const reqStart = new Date(start);
+      const reqEnd = new Date(end);
+      return (reqStart >= rangeStart && reqEnd <= rangeEnd) || (reqStart <= rangeStart && reqEnd >= rangeStart) || (reqStart <= rangeEnd && reqEnd >= rangeEnd);
+    });
+
+    if (rangeExists) {
+      console.log('Training data for the requested date range already exists in the context.');
       return;
     }
 
     setLoading(true);
     try {
-      
-      const url = 'https://88pqpqlu5f.execute-api.eu-west-2.amazonaws.com/dev_1/frontend'; // Use your actual API endpoint
+      console.log(`Fetching new training data for range: ${start} to ${end}`);
+      const url = 'https://88pqpqlu5f.execute-api.eu-west-2.amazonaws.com/dev_1/frontend';
       const response = await fetch(url, {
-        method: 'POST', // or 'GET' if your API requires
+        method: 'POST',
         headers: new Headers({
           'Authorization': `Bearer ${jwtToken}`,
           'Content-Type': 'application/json'
         }),
-        body: JSON.stringify({}), // If the API expects a POST body, even if it's empty
+        body: JSON.stringify({ startDate: start, endDate: end }),
       });
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      console.log('Fetching training data...');
+
       const data = await response.json();
       console.log('Training data received:', data);
-      setTrainingData(data); // Assuming the JSON response is the data you want
+
+      setTrainingData(prevData => [...prevData, ...data]); // Append the new data to the existing data
+      setFetchedRanges(prevRanges => [...prevRanges, { start, end }]); // Update fetched ranges
       setLoading(false);
     } catch (error) {
       console.error("Failed to fetch training data:", error);
       setError(error.message);
       setLoading(false);
-      // You can also handle errors by setting an error state and providing it through context
     }
   };
 
-  // When the provider is mounted, call refreshData to load the initial data
+  const updateTrainingData = (sessionId, perceivedExertion, perceivedRecovery, perceivedTrainingSuccess) => {
+    setTrainingData(prevData => 
+      prevData.map(item => 
+        item.session_id === sessionId 
+        ? { 
+            ...item, 
+            perceived_exertion: perceivedExertion, 
+            perceived_recovery: perceivedRecovery, 
+            perceived_training_success: perceivedTrainingSuccess 
+          } 
+        : item
+      )
+    );
+    console.log('Training data updated:', trainingData);
+  };
+
   useEffect(() => {
-    refreshData();
+    refreshTrainingData(); // Fetch data for the last 60 days by default
   }, []);
 
   return (
-    <TrainingDataContext.Provider value={{ trainingData, refreshData , loading, error}}>
+    <TrainingDataContext.Provider value={{ trainingData, refreshTrainingData, updateTrainingData, loading, error }}>
       {children}
     </TrainingDataContext.Provider>
   );
