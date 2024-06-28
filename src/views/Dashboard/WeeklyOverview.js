@@ -15,7 +15,7 @@ import CoachingDetailsModal from './CoachingDetailsModal';
 import { useAuth } from 'components/Authentication/authContext';
 
 const CalendarComponent = () => {
-  const { trainingData, refreshTrainingData, loading: trainingLoading, error: trainingError } = useContext(TrainingDataContext);
+  const { trainingData, refreshTrainingData, updateTrainingData, loading: trainingLoading, error: trainingError } = useContext(TrainingDataContext);
   const { coachingData, loading: coachingLoading, error: coachingError } = useContext(CoachingDataContext);
   const { jwtToken } = useAuth();
   const [events, setEvents] = useState([]);
@@ -93,6 +93,32 @@ const CalendarComponent = () => {
     }
   };
 
+  const handleTrainingModalSubmit = async (data) => {
+    try {
+      const url = 'https://www.gamified-coaching-app-222.co.uk/subjparams'; // Replace with your actual API endpoint
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${jwtToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Update training data context
+      updateTrainingData(data.sessionId, data.perceivedExertion, data.perceivedRecovery, data.perceivedTrainingSuccess);
+
+      return { success: true };
+    } catch (error) {
+      console.error('Submission error:', error);
+      return { success: false };
+    }
+  };
+
   if (trainingLoading || coachingLoading || trainingError || coachingError) {
     if (trainingError) {
       console.error('Error fetching training data:', trainingError);
@@ -146,6 +172,7 @@ const CalendarComponent = () => {
           isOpen={isTrainingModalOpen}
           onClose={() => setIsTrainingModalOpen(false)}
           eventDetails={selectedEvent}
+          onSubmit={handleTrainingModalSubmit} // Pass the onSubmit function here
         />
       )}
 

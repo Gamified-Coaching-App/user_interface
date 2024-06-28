@@ -54,9 +54,9 @@ const TrainingDetailsModal = ({ isOpen, onClose, eventDetails, onSubmit }) => {
 
   useEffect(() => {
     if (eventDetails) {
-      setPerceivedExertion(eventDetails.perceivedExertion ?? null);
-      setRecovery(eventDetails.perceivedRecovery ?? null);
-      setTrainingSuccess(eventDetails.perceivedTrainingSuccess ?? null);
+      setPerceivedExertion(eventDetails.perceived_exertion ?? null);
+      setRecovery(eventDetails.perceived_recovery ?? null);
+      setTrainingSuccess(eventDetails.perceived_training_success ?? null);
     }
   }, [eventDetails]);
 
@@ -64,7 +64,7 @@ const TrainingDetailsModal = ({ isOpen, onClose, eventDetails, onSubmit }) => {
     const data = {
       sessionId: eventDetails.session_id,
       timestampLocal: eventDetails.timestamp_local,
-      perceivedExertion,
+      perceivedExertion: perceivedExertion,
       perceivedRecovery: recovery,
       perceivedTrainingSuccess: trainingSuccess,
     };
@@ -147,13 +147,13 @@ const TrainingDetailsModal = ({ isOpen, onClose, eventDetails, onSubmit }) => {
           <SimpleGrid columns={2} spacing={5} mb="4">
             <Box>
               <Text fontSize="md" mb="2">
-                Distance: {(eventDetails?.distance / 1000).toFixed(2)} km
+                Distance: {(eventDetails?.distance_meters_total / 1000).toFixed(2)} km
               </Text>
               <Text fontSize="md" mb="2">
-                Average Speed: {eventDetails?.averageSpeed} km/h
+                Average Speed: {eventDetails?.average_speed_km_h} km/h
               </Text>
               <Text fontSize="md" mb="2">
-                Max Speed: {eventDetails?.maxSpeed} km/h
+                Max Speed: {eventDetails?.max_speed_km_h} km/h
               </Text>
               <Text fontSize="md" mb="2">
                 Average Pace: {eventDetails?.average_pace_min_per_km} min/km
