@@ -29,7 +29,7 @@ export const CoachingDataProvider = ({ children }) => {
 
     setLoading(true);
     try {
-      const url = 'http://Coachi-Coach-bgtKlzJd2GCw-908383528.eu-west-2.elb.amazonaws.com/frontend';
+      const url = 'https://xhx43clxrh.execute-api.eu-west-2.amazonaws.com/dev_1/frontend';
       const response = await fetch(url, {
         method: 'GET',
         headers: {
