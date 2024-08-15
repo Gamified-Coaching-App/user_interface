@@ -70,18 +70,18 @@ const CalendarComponent = () => {
     
         // Construct the full date-time string
         const dateTimeString = `${date}T${randomHour.toString().padStart(2, '0')}:00:00`;
-    
+
         let title;
         switch (value.type) {
-            case 'RUNNING':
-                title = 'Run';
-                break;
-            case 'STRENGTH_CONDITIONING':
-                title = 'Strength & Conditioning';
-                break;
-            default:
-                title = 'Other Activity';
-                break;
+          case 'RUNNING':
+            title = 'Run';
+            break;
+          case 'STRENGTH_CONDITIONING':
+            title = 'Strength & Conditioning';
+            break;
+          default:
+            title = 'Other Activity';
+            break;
         }
     
         return {
@@ -215,6 +215,7 @@ const CalendarComponent = () => {
           isOpen={isCoachingModalOpen}
           onClose={() => setIsCoachingModalOpen(false)}
           eventDetails={selectedEvent.workout}
+          type={selectedEvent.type}
         />
       )}
     </Flex>

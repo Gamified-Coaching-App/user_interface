@@ -8,6 +8,7 @@ import {
   ModalBody,
   ModalCloseButton,
   Text,
+  Divider,
   Box,
   UnorderedList,
   ListItem
@@ -29,6 +30,15 @@ class CoachingDetailsModal extends Component {
           },
           toolbar: {
             show: false, // Hide the toolbar
+          },
+          zoom: {
+            enabled: false, // Disable zooming
+          },
+          pan: {
+            enabled: false, // Disable panning
+          },
+          selection: {
+            enabled: false, // Disable selection
           },
         },
         xaxis: {
@@ -131,7 +141,7 @@ class CoachingDetailsModal extends Component {
                     borderWidth: 0, // Remove border
                     borderColor: 'transparent', // Ensure border is transparent
                     padding: 0, // Remove padding around text
-                    fontSize: '14px', // Optional: Adjust font size if needed
+                    fontSize: '12px', // Optional: Adjust font size if needed
                   },
                 },
               });
@@ -193,7 +203,7 @@ class CoachingDetailsModal extends Component {
                   borderWidth: 0, // Remove border
                   borderColor: 'transparent', // Ensure border is transparent
                   padding: 0, // Remove padding around text
-                  fontSize: '14px', // Optional: Adjust font size if needed
+                  fontSize: '12px', // Optional: Adjust font size if needed
                   textAnchor: 'start', // Left-align labels
                 },
               },
@@ -207,7 +217,7 @@ class CoachingDetailsModal extends Component {
 
     // Process each phase of the workout
     processSegment("warmup", "Warmup");
-    processSegment("main", "Interval Set");
+    processSegment("main", "Interval");
     processSegment("cooldown", "Cooldown");
 
     return {
@@ -246,20 +256,21 @@ class CoachingDetailsModal extends Component {
   }
 
   render() {
-    const { isOpen, onClose } = this.props;
-    const { workoutDescription } = this.state;
+    const { isOpen, onClose, eventDetails, type } = this.props;
 
-    return (
-      <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Session Details</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
+    let content;
+    let heading;  // Define a variable for the heading
+
+    switch (type) {
+      case 'RUNNING':
+        heading = "Your Run:";
+        content = (
+          <>
+            <Text fontSize="l" fontWeight="bold" mb="4">{heading}</Text>
             <Box mb="4">
               <UnorderedList>
-                {workoutDescription.map((desc, index) => (
-                  <ListItem key={index}>{desc}</ListItem>
+                {this.state.workoutDescription.map((desc, index) => (
+                  <ListItem key={index} fontSize="sm">{desc}</ListItem>
                 ))}
               </UnorderedList>
             </Box>
@@ -268,11 +279,58 @@ class CoachingDetailsModal extends Component {
                 <Chart
                   options={this.state.options}
                   series={this.state.series}
-                  type="area" // Ensure area chart is used
+                  type="area" 
                   height="300"
                 />
               </Box>
             </Box>
+            
+            <Divider my="4" /> {/* Divider between Data and Graph */}
+
+            <Box mt="4">
+              <Text fontSize="md" fontWeight="bold">Training Zone Explanations:</Text>
+              <UnorderedList mt="2" fontSize="sm">
+                <ListItem><strong>Zone 1:</strong> No effort, warmup</ListItem>
+                <ListItem><strong>Zone 2:</strong> Conversational speed, can be maintained for long durations</ListItem>
+                <ListItem><strong>Zone 3:</strong> Moderate effort, more difficult to talk while running </ListItem>
+                <ListItem><strong>Zone 4:</strong> Hard effort, high-intensity running, hard to maintain</ListItem>
+                <ListItem><strong>Zone 5:</strong> Maximum effort, sprinting, can be maintained for short bursts</ListItem>
+              </UnorderedList>
+            </Box>
+          </>
+        );
+        break;
+      case 'OTHER':
+        heading = "Your Alternative Session:";
+        content = (
+          <>
+            <Text fontSize="l" fontWeight="bold" mb="4">{heading}</Text>
+            <Text>Do {eventDetails.duration} hours of alternative training of your choice.</Text>
+          </>
+        );
+        break;
+      case 'STRENGTH_CONDITIONING':
+        heading = "Your Strength & Conditioning Session:";
+        content = (
+          <>
+            <Text fontSize="l" fontWeight="bold" mb="4">{heading}</Text>
+            <Text>Do a strength & conditioning session with focus on core and legs.</Text>
+          </>
+        );
+        break;
+      default:
+        heading = "Invalid Activity Type";
+        content = <Text>Invalid activity type.</Text>;
+    }
+
+    return (
+      <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Details</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {content}
           </ModalBody>
         </ModalContent>
       </Modal>

@@ -36,18 +36,29 @@ const MainApp = ({ signOut: amplifySignOut }) => {
         <LeaderboardDataProvider>
         <ChallengesDataProvider>
           <HashRouter>
-          <Flex position="fixed" top="40" right="150" p="4" justifyContent="flex-end"  zIndex="10">
+          <Flex 
+              position="sticky" 
+              top="100px" 
+              right="150px"  // Align to the right side of its parent container
+              p="4" 
+              justifyContent="flex-end" 
+              zIndex="10"
+              bg="gray.900"
+              boxShadow="md"
+              width="97%" // Ensure the flex container spans the full width of the viewport
+              height="100%"
+            >
               <Button
-                  onClick={signOut}
-                  w='100%'
-                  color="white"
-                  fontSize='xs'
-                  variant='brand'
-                  px='20px'
-                  mb='16px'>
+                onClick={signOut}
+                color="white"
+                fontSize='xs'
+                variant='brand'
+                px='20px'
+                mb='16px'
+              >
                 <Text display={{ sm: "none", md: "flex" }} fontWeight="bold">Sign Out</Text>
               </Button>
-              </Flex>
+            </Flex>
             <Switch> 
               <Route path={`/admin`} component={AdminLayout} />
               <Route path={`/rtl`} component={RTLLayout} />
