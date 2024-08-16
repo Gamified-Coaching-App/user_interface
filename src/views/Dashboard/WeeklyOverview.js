@@ -171,6 +171,7 @@ const CalendarComponent = () => {
               themeSystem="bootstrap"
               initialView={currentView}
               initialDate={currentDate}
+              firstDay={1}
               events={[]}
               eventClick={handleEventClick}
               datesSet={handleDatesSet}
