@@ -62,38 +62,42 @@ const CalendarComponent = () => {
         };
       });
 
-      const parsedCoachingEvents = Object.entries(coachingData.workoutPlan).map(([key, value]) => {
-        const date = key.split('_')[0];
-    
-        // Generate a random integer between 7 and 11 for the hour
-        const randomHour = Math.floor(Math.random() * 5) + 7; // Math.random() * 5 gives a number between 0 and 4, then add 7
-    
-        // Construct the full date-time string
-        const dateTimeString = `${date}T${randomHour.toString().padStart(2, '0')}:00:00`;
+      let parsedCoachingEvents = [];
 
-        let title;
-        switch (value.type) {
-          case 'RUNNING':
-            title = 'Run';
-            break;
-          case 'STRENGTH_CONDITIONING':
-            title = 'Strength & Conditioning';
-            break;
-          default:
-            title = 'Other Activity';
-            break;
-        }
-    
-        return {
-            title: title,
-            start: new Date(dateTimeString),
-            extendedProps: {
-                ...value,
-                eventType: 'COACHING',
-            },
-            classNames: value.type === 'RUNNING' ? 'fc-event-dot-running' : 'fc-event-dot-other',
-        };
-    });
+      if (coachingData.workoutPlan !== null) {
+        parsedCoachingEvents = Object.entries(coachingData.workoutPlan).map(([key, value]) => {
+          const date = key.split('_')[0];
+      
+          // Generate a random integer between 7 and 11 for the hour
+          const randomHour = Math.floor(Math.random() * 5) + 7; // Math.random() * 5 gives a number between 0 and 4, then add 7
+      
+          // Construct the full date-time string
+          const dateTimeString = `${date}T${randomHour.toString().padStart(2, '0')}:00:00`;
+
+          let title;
+          switch (value.type) {
+            case 'RUNNING':
+              title = 'Run';
+              break;
+            case 'STRENGTH_CONDITIONING':
+              title = 'Strength & Conditioning';
+              break;
+            default:
+              title = 'Other Activity';
+              break;
+          }
+      
+          return {
+              title: title,
+              start: new Date(dateTimeString),
+              extendedProps: {
+                  ...value,
+                  eventType: 'COACHING',
+              },
+              classNames: value.type === 'RUNNING' ? 'fc-event-dot-running' : 'fc-event-dot-other',
+          };
+      });
+    }
 
       setEvents([...parsedTrainingEvents, ...parsedCoachingEvents]);
     }
