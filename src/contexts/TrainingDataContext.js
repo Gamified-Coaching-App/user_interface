@@ -31,7 +31,7 @@ export const TrainingDataProvider = ({ children }) => {
 
     // Default to the last 60 days if no dates are provided
     const end = endDate || new Date().toISOString().split('T')[0];
-    const start = startDate || new Date(new Date().setDate(new Date().getDate() - 60)).toISOString().split('T')[0];
+    const start = startDate || new Date(new Date().setDate(new Date().getDate() - 120)).toISOString().split('T')[0];
 
     // Check if the date range data already exists
     console.log(`Requested training data for range: ${start} to ${end}`);
